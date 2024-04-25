@@ -1,0 +1,88 @@
+.navbar-container {
+
+    padding  : '0 48px';
+
+    .header {
+        padding      : 10px 0;
+        display      : flex;
+        align-items  : center;
+
+        .logo {
+            cursor        : pointer;
+            display       : flex;
+            align-items   : center;
+            font-size     : 40px;
+            color         : #32475c;
+            margin-right  : 5px;
+        }
+
+        .title {
+            font-size     : 28px;
+            font-weight   : 700;
+            color         : #32475c;
+            font-family   : sans-serif;
+            margin-right  : 28px;
+        }
+
+        .cart {
+            padding       : 0 20px;
+            border-right  : 1px solid #ccc;
+            cursor        : pointer;
+
+            &:hover {
+                opacity  : 0.8;
+            }
+        }
+
+        .account {
+            margin-left    : 20px;
+            cursor         : pointer;
+            color          : #808089;
+            display        : flex;
+            align-items    : center;
+            padding        : 8px 16px;
+            border-radius  : 8px;
+
+            .icon {
+                font-size     : 20px;
+                margin-right  : 5px;
+            }
+        }
+
+        .account:hover {
+            background-color  : #27272a1f;
+        }
+    }
+}
+
+/* Định nghĩa các styles cho màn hình điện thoại di động */
+@media only screen and (max-width: 767px) {
+
+    .header {
+        padding  : 10px 20px !important;
+    }
+
+    .title,
+    .logo,
+    .dropdown {
+        display  : none;
+    }
+
+    .menu-icon {
+        display    : block;
+        font-size  : 1.2rem;
+        color      : #8c8c8c;
+        /* Hiển thị content mobile */
+    }
+
+    .ant-drawer-title {
+        color  : #8c8c8c !important;
+    }
+}
+
+/* Ẩn content mobile trên màn hình tablet và desktop */
+@media only screen and (min-width: 768px) {
+    .menu-icon {
+        display  : none;
+    }
+}
