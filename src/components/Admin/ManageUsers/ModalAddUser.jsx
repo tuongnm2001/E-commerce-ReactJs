@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal, Form, Row, Col, Input, Divider, message } from 'antd';
+import { Button, Modal, Form, Row, Col, Input, Divider, message, notification } from 'antd';
 import useFormInstance from 'antd/es/form/hooks/useFormInstance';
 import { postAddNewUser } from '../../../services/api';
 
@@ -17,6 +17,9 @@ const ModalAddUser = (props) => {
             const res = await postAddNewUser(fullName, password, email, phone);
             if (res && res.data) {
                 message.success("Thêm người dùng thành công ")
+                // notification.success({
+                //     description: ("Thêm người dùng thành công ")
+                // })
                 handleReLoad();
                 // setOpen(false);
                 handleCancel();

@@ -1,27 +1,52 @@
 import React, { useState } from 'react';
-import { Button, Modal, message, Upload, Table } from 'antd';
+import { Button, Modal, message, Upload, Table, notification } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
+import * as XLSX from 'xlsx';
+import { postCreateListUserBulk } from '../../../services/api';
 
 const ModalImportDataUser = (props) => {
 
     const { Dragger } = Upload;
-    const { open, setOpen } = props;
+    const { open, setOpen, handleReLoad } = props;
+    const [isSubmit, setIsSubmit] = useState(true);
+    const [isShowUploadList, setIsShowUploadList] = useState(true);
+    const [dataSource, setDataSource] = useState([]);
 
     const columns =
         [
-            { dataIndex: 'fullName', title: 'Tên hiển thị' },
-            { dataIndex: 'email', title: 'Email' },
-            { dataIndex: 'phone', title: 'Số điện thoại' },
+            { dataIndex: 'fullName', title: 'Tên hiển thị', key: 'fullName' },
+            { dataIndex: 'email', title: 'Email', key: 'email' },
+            { dataIndex: 'phone', title: 'Số điện thoại', key: 'phone' },
         ]
 
-    const showModal = () => {
-        setIsModalOpen(true);
+    const handleOk = async () => {
+        const data = dataSource.map((item) => {
+            item.password = '123456'
+            return item;
+        })
+
+        const res = await postCreateListUserBulk(data)
+        if (data && data.length > 0) {
+            notification.success({
+                description: `Success: ${res.data.countSuccess}, Error: ${res.data.countError}`,
+                message: 'Upload thành công !'
+            })
+            setOpen(false);
+            handleReLoad();
+        } else {
+            notification.error({
+                description: res.message,
+                message: 'Có lỗi xảy ra !'
+            })
+        }
+
     };
-    const handleOk = () => {
-        setIsModalOpen(false);
-    };
+
     const handleCancel = () => {
         setOpen(false);
+        setDataSource([]);
+        setIsSubmit(true);
+        setIsShowUploadList(false);
     };
 
     const dummyRequest = ({ file, onSuccess }) => {
@@ -35,7 +60,6 @@ const ModalImportDataUser = (props) => {
         multiple: false,
         maxCount: 1,
         accept: ".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel",
-        // action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
         customRequest: dummyRequest,
         onChange(info) {
             const { status } = info.file;
@@ -44,6 +68,24 @@ const ModalImportDataUser = (props) => {
             }
             if (status === 'done') {
                 message.success(`${info.file.name} file uploaded successfully.`);
+                // Đọc dữ liệu từ file excel
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[sheetName];
+                    const dataJson = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    // Lấy dữ liệu từ dòng thứ 2 (vì dòng đầu tiên thường là tiêu đề)
+                    const importedData = dataJson.slice(1).map(row => ({
+                        fullName: row[0],
+                        email: row[1],
+                        phone: row[2],
+                    }));
+                    setDataSource(importedData);
+                    setIsSubmit(false)
+                };
+                reader.readAsArrayBuffer(info.file.originFileObj);
             } else if (status === 'error') {
                 message.error(`${info.file.name} file upload failed.`);
             }
@@ -60,12 +102,13 @@ const ModalImportDataUser = (props) => {
                 open={open}
                 onOk={handleOk}
                 onCancel={handleCancel}
-                okText="Import data"
+                okText={"Import data"}
                 maskClosable={false}
+                okButtonProps={{ disabled: isSubmit }}
                 centered
                 width={"50vw"}
             >
-                <Dragger {...propsUpload} size='3   '>
+                <Dragger {...propsUpload} showUploadList={isShowUploadList}>
                     <p className="ant-upload-drag-icon">
                         <InboxOutlined />
                     </p>
@@ -77,8 +120,9 @@ const ModalImportDataUser = (props) => {
 
                 <Table
                     columns={columns}
+                    dataSource={dataSource}
                     style={{ paddingTop: '20px' }}
-                    caption="Du lieu up load"
+                    rowKey={record => record.fullName}
                 />
             </Modal >
         </>

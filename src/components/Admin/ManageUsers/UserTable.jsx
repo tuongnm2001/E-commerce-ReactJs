@@ -191,6 +191,7 @@ const UserTable = () => {
             <ModalImportDataUser
                 open={isShowModalImportDataUser}
                 setOpen={setIsShowModalImportDataUser}
+                handleReLoad={handleReLoad}
             />
         </>
 
