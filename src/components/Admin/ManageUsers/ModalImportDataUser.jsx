@@ -3,6 +3,7 @@ import { Button, Modal, message, Upload, Table, notification } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import * as XLSX from 'xlsx';
 import { postCreateListUserBulk } from '../../../services/api';
+import templateFile from './template.xlsx?url'
 
 const ModalImportDataUser = (props) => {
 
@@ -32,6 +33,8 @@ const ModalImportDataUser = (props) => {
                 message: 'Upload thành công !'
             })
             setOpen(false);
+            setIsShowUploadList(false);
+            setDataSource([]);
             handleReLoad();
         } else {
             notification.error({
@@ -114,7 +117,8 @@ const ModalImportDataUser = (props) => {
                     </p>
                     <p className="ant-upload-text">Click or drag file to this area to upload</p>
                     <p className="ant-upload-hint">
-                        Support for a single upload. Only accept .csv .xls .xlsx
+                        Support for a single upload. Only accept .csv .xls .xlsx . or &nbsp;
+                        <a onClick={(e) => e.stopPropagation()} href={templateFile} download>Download Sample File</a>
                     </p>
                 </Dragger>
 

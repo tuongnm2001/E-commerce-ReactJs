@@ -10,6 +10,7 @@ import ModalAddUser from './ModalAddUser';
 import moment from 'moment';
 import ModalImportDataUser from './ModalImportDataUser';
 import './UserTable.scss'
+import * as XLSX from 'xlsx';
 
 const UserTable = () => {
     const [listUsers, setListUser] = useState([])
@@ -122,7 +123,12 @@ const UserTable = () => {
     }
 
     const handleExportUser = () => {
-        alert("handleExportUser")
+        const worksheet = XLSX.utils.json_to_sheet(listUsers);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+        //let buffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
+        //XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
+        XLSX.writeFile(workbook, "DataSheet.xlsx");
     }
 
     const handleImportUser = () => {
