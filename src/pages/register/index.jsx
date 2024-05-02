@@ -37,7 +37,7 @@ const RegisterPage = () => {
                             <Divider />
                         </div>
                         <Form
-                            name="basic"
+                            name="register"
                             // style={{ maxWidth: 600, margin: '0 auto' }}
                             onFinish={onFinish}
                             autoComplete="off"

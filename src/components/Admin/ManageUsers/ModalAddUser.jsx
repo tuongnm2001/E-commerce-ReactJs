@@ -44,7 +44,7 @@ const ModalAddUser = (props) => {
         <>
 
             <Modal
-                title="Thêm mới người dùng"
+                title="THÊM MỚI NGƯỜI DÙNG"
                 open={open}
                 onOk={handleOk}
                 onCancel={handleCancel}
@@ -57,7 +57,7 @@ const ModalAddUser = (props) => {
             >
                 <Divider />
                 <Form
-                    name="basic"
+                    name="add-new-user"
                     autoComplete="off"
                     form={form}
                 >
@@ -69,7 +69,7 @@ const ModalAddUser = (props) => {
                                 name="fullName"
                                 rules={[{ required: true, message: 'Vui lòng nhập Tên hiển thị của bạn !' }]}
                             >
-                                <Input width={400} />
+                                <Input />
                             </Form.Item>
                         </Col>
 

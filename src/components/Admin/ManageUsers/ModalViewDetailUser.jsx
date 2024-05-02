@@ -37,19 +37,19 @@ const ModalViewDetailUser = (props) => {
         },
         {
             key: '5',
-            label: 'Role',
+            label: 'Vai trò',
             children: <Badge status="processing" text={dataUserView?.role} />,
         },
 
         {
             key: '7',
-            label: 'Created At',
+            label: 'Ngày tạo',
             children: formattedCreatedAt
         },
 
         {
             key: '8',
-            label: 'Updated At',
+            label: 'Ngày cập nhật',
             children: formattedUpdatedAt,
         }
     ];

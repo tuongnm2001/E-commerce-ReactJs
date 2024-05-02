@@ -1,8 +1,8 @@
-import { Table, Button, Tooltip } from 'antd';
+import { Table, Button, Tooltip, message, Popconfirm } from 'antd';
 import { useEffect, useState } from 'react';
-import { getUserWithPaginate } from '../../../services/api';
+import { deleteAUser, getUserWithPaginate } from '../../../services/api';
 import InputSearch from './InputSearch';
-import { DeleteOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import ModalViewDetailUser from './ModalViewDetailUser';
 import { TfiExport } from "react-icons/tfi";
 import { TfiImport } from "react-icons/tfi";
@@ -11,17 +11,23 @@ import moment from 'moment';
 import ModalImportDataUser from './ModalImportDataUser';
 import './UserTable.scss'
 import * as XLSX from 'xlsx';
+import ModalEditUser from './ModalEditUser';
 
 const UserTable = () => {
     const [listUsers, setListUser] = useState([])
     const [current, setCurrent] = useState(1)
     const [pageSize, setPageSize] = useState(5)
+    const [filter, setFilter] = useState('')
+    const [sortQuery, setSortQuery] = useState('sort=-updatedAt')
     const [total, setTotal] = useState(0)
     const [isLoading, setIsLoading] = useState(false)
     const [isShowModalViewDetail, setIsShowModalViewDetail] = useState(false)
     const [dataUserView, setDataUserView] = useState({})
     const [isShowModalAddUser, setIsShowModalAddUser] = useState(false)
     const [isShowModalImportDataUser, setIsShowModalImportDataUser] = useState(false)
+    const [isShowModalEditUser, setIsShowModalEditUser] = useState(false)
+    const [dataEditUser, setDataEditUser] = useState([])
+    const [confirmLoading, setConfirmLoading] = useState(false);
 
     const columns = [
         {
@@ -59,17 +65,63 @@ const UserTable = () => {
             render: (text, record) => (
                 <span>{moment(record.createdAt).format('MM/DD/YYYY HH:mm:ss')}</span>
             ),
-            sorter: (a, b) => a.createdAt.localeCompare(b.createdAt)
+            // sorter: (a, b) => a.createdAt.localeCompare(b.createdAt)
+            sorter: true
         },
         {
             title: 'Action',
             render: (text, record, index) => {
                 return (
-                    <Button type='primary' danger><DeleteOutlined /> Delete</Button >
+                    <div className='btn-action'>
+                        <EditOutlined onClick={() => handleEditUser(record)} style={{ color: '#ffc107' }} />
+
+                        <Popconfirm
+                            title={`Delete A User`}
+                            description={(
+                                <span>
+                                    Are you sure you want to delete <span style={{ color: 'red' }}>{record.email}</span> user?
+                                </span>
+                            )}
+                            icon={
+                                < QuestionCircleOutlined
+                                    style={{
+                                        color: 'red',
+                                    }}
+                                />
+                            }
+                            okButtonProps={{
+                                loading: confirmLoading,
+                            }}
+                            onConfirm={() => handleOk(record._id)}
+                            okText="Xóa"
+                            cancelText="Hủy"
+                        >
+                            <DeleteOutlined style={{ color: '#dc3545' }} />
+                        </Popconfirm >
+                    </div >
                 )
             }
         },
+
     ];
+
+    const handleOk = async (_id) => {
+        setConfirmLoading(true);
+        const res = await deleteAUser(_id);
+        if (res && res.data) {
+            message.success('Xóa người dùng thành công!');
+            handleReLoad();
+            setConfirmLoading(false);
+        } else {
+            message.error(res.message)
+        }
+    };
+
+
+    const handleEditUser = (user) => {
+        setIsShowModalEditUser(true)
+        setDataEditUser(user)
+    }
 
     const onChange = (pagination, filters, sorter, extra) => {
         if (pagination && pagination.current !== current) {
@@ -81,6 +133,10 @@ const UserTable = () => {
             setCurrent(1)
         }
         // console.log('params', pagination, filters, sorter, extra);
+        if (sorter && sorter.field) {
+            const q = sorter.order === 'ascend' ? `sort=${sorter.field}` : `sort=-${sorter.field}`
+            setSortQuery(q)
+        }
     };
 
     const getAllUserWithPaginate = async (searchFilter) => {
@@ -89,6 +145,10 @@ const UserTable = () => {
 
         if (searchFilter) {
             query += `&${searchFilter}`
+        }
+
+        if (sortQuery) {
+            query += `&${sortQuery}`
         }
 
         const res = await getUserWithPaginate(query);
@@ -102,7 +162,7 @@ const UserTable = () => {
 
     useEffect(() => {
         getAllUserWithPaginate()
-    }, [current, pageSize])
+    }, [current, pageSize, filter, sortQuery])
 
     const handleSearch = (query) => {
         getAllUserWithPaginate(query)
@@ -146,9 +206,11 @@ const UserTable = () => {
 
                     <Button type="primary" onClick={() => handleAddNewUser()}><PlusOutlined />Thêm mới</Button>
 
-                    <Button onClick={() => handleReLoad()}>
-                        <Tooltip placement="topLeft" title={'Reload Table'} ><ReloadOutlined /></Tooltip>
-                    </Button>
+                    <Tooltip placement="topLeft" title={'Reload Table'} >
+                        <Button onClick={() => handleReLoad()}>
+                            <ReloadOutlined />
+                        </Button>
+                    </Tooltip>
                 </div>
             </div >
         )
@@ -169,12 +231,12 @@ const UserTable = () => {
                 }))}
                 onChange={onChange}
                 pagination={{
-                    // defaultPageSize: 1,
-                    // showSizeChanger: true,
-                    // pageSizeOptions: ['5', '10', '15']
+                    defaultPageSize: 1,
+                    showSizeChanger: true,
+                    pageSizeOptions: ['5', '10', '15'],
                     current: current,
                     pageSize: pageSize,
-                    // showSizeChanger: true,
+                    showSizeChanger: true,
                     total: total
                 }}
                 scroll={{ x: true }}
@@ -197,6 +259,13 @@ const UserTable = () => {
             <ModalImportDataUser
                 open={isShowModalImportDataUser}
                 setOpen={setIsShowModalImportDataUser}
+                handleReLoad={handleReLoad}
+            />
+
+            <ModalEditUser
+                open={isShowModalEditUser}
+                setOpen={setIsShowModalEditUser}
+                dataEditUser={dataEditUser}
                 handleReLoad={handleReLoad}
             />
         </>

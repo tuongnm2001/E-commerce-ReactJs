@@ -43,7 +43,7 @@ export default function App() {
       || window.location.pathname === '/register')
       return;
 
-    const res = await fetchAccount()
+    const res = await fetchAccount();
     if (res && res.data) {
       dispatch(doGetAccountAction(res.data))
     }

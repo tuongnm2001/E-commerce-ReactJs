@@ -12,6 +12,7 @@
         gap      : 10px;
     }
 
+
     /* CSS cho màn hình nhỏ (di động) */
     @media only screen and (max-width: 670px) {
         display  : flex;
@@ -22,4 +23,10 @@
             gap        : 10px;
         }
     }
+}
+
+.btn-action {
+    display  : flex;
+    gap      : 15px;
+    cursor   : pointer;
 }

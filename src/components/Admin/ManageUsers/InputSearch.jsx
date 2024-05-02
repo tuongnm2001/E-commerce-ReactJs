@@ -32,7 +32,7 @@ const InputSearch = (props) => {
             <div className="input-container">
                 <div className='form'>
                     <Form
-                        name="basic"
+                        name="form-search"
                         onFinish={onFinish}
                         autoComplete="off"
                         form={form}

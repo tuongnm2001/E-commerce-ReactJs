@@ -43,7 +43,7 @@ const LoginPage = () => {
                             <Divider />
                         </div>
                         <Form
-                            name="basic"
+                            name="login"
                             // style={{ maxWidth: 600, margin: '0 auto' }}
                             onFinish={onFinish}
                             autoComplete="off"
