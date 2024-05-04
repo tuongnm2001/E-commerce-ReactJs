@@ -1,29 +1,30 @@
-import './InputSearch.scss'
+import './InputSearchBooks.scss'
 import { Button, Divider, Form, Input, message, notification, Col, Row } from 'antd';
 import { ClearOutlined, SearchOutlined } from '@ant-design/icons';
 
-const InputSearch = (props) => {
+const InputSearchBooks = (props) => {
 
-    const { handleSearch } = props;
+    const { handleSearchBooks } = props;
 
     const [form] = Form.useForm();
 
     const onFinish = async (values) => {
-        let query = "";
-        if (values.fullName) {
-            query += `&fullName=/${values.fullName}/i`
+        let query = ""
+
+        if (values.mainText) {
+            query += `&mainText=/${values.mainText}/i`
         }
 
-        if (values.email) {
-            query += `&email=/${values.email}/i`
+        if (values.author) {
+            query += `&author=/${values.author}/i`
         }
 
-        if (values.phone) {
-            query += `&phone=/${values.phone}/i`
+        if (values.category) {
+            query += `&category=/${values.category}/i`
         }
 
         if (query) {
-            handleSearch(query)
+            handleSearchBooks(query);
         }
     }
 
@@ -41,8 +42,8 @@ const InputSearch = (props) => {
                             <Col span={8}>
                                 <Form.Item
                                     labelCol={{ span: 24 }} //whole column
-                                    label="Tên hiển thị"
-                                    name="fullName"
+                                    label="Tên sách"
+                                    name="mainText"
                                 >
                                     <Input width={400} />
                                 </Form.Item>
@@ -51,8 +52,8 @@ const InputSearch = (props) => {
                             <Col span={8}>
                                 <Form.Item
                                     labelCol={{ span: 24 }} //whole column
-                                    label="Email"
-                                    name="email"
+                                    label="Tác giả"
+                                    name="author"
                                 >
                                     <Input width={400} />
                                 </Form.Item>
@@ -61,15 +62,15 @@ const InputSearch = (props) => {
                             <Col span={8}>
                                 <Form.Item
                                     labelCol={{ span: 24 }} //whole column
-                                    label="Số điện thoại"
-                                    name="phone"
+                                    label="Thể loại"
+                                    name="category"
                                 >
                                     <Input width={400} />
                                 </Form.Item>
                             </Col>
                         </Row>
 
-                        <div className='btn-inputSearch'>
+                        <div className='btn-InputSearchBooks'>
                             <Button type="primary" htmlType="submit">
                                 <SearchOutlined />Tìm kiếm
                             </Button>
@@ -85,4 +86,4 @@ const InputSearch = (props) => {
     );
 }
 
-export default InputSearch;
+export default InputSearchBooks;

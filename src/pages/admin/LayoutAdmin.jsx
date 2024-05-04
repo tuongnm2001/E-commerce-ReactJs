@@ -10,6 +10,7 @@ import {
     HeartTwoTone,
     ProfileOutlined,
     LogoutOutlined,
+    UsergroupAddOutlined,
 } from '@ant-design/icons';
 import { Layout, message, Menu, Button, theme, Divider, Avatar, Space, Dropdown, Typography, Badge } from 'antd';
 const { Header, Sider, Content, Footer } = Layout;
@@ -130,8 +131,8 @@ const LayoutAdmin = () => {
                                         children: [
                                             {
                                                 key: 'value',
-                                                icon: <AppstoreOutlined />,
-                                                label: <Link to='user'>CRUD</Link>,
+                                                icon: < UsergroupAddOutlined />,
+                                                label: <Link to='user-crud'>CRUD</Link>,
 
                                             },
                                             {
@@ -204,9 +205,7 @@ const LayoutAdmin = () => {
                             <Content
                                 style={{
                                     margin: '20px 16px',
-                                    // padding: '24px',
                                     minHeight: 280,
-                                    // background: colorBgContainer,
                                     borderRadius: borderRadiusLG,
                                 }}
                             >

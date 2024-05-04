@@ -1,72 +1,79 @@
 import React, { useState } from 'react';
-import { Badge, Descriptions, Drawer } from 'antd';
+import { Drawer, Row, Avatar, Col } from 'antd';
 import moment from 'moment';
+import './ModalViewDetailUser.scss'
+
+const DescriptionItem = ({ title, content }) => (
+    <div className="site-description-item-profile-wrapper">
+        <p className="site-description-item-profile-p-label">{title}:</p>
+        {content}
+    </div>
+);
 
 const ModalViewDetailUser = (props) => {
 
     const { open, setOpen, dataUserView } = props;
+    const urlAvatar = `${import.meta.env.VITE_BACKEND_URL}/images/avatar/${dataUserView?.avatar}`
+
+
+    console.log(dataUserView);
 
     //format createdAt , updatedAt
-    const formattedCreatedAt = moment(dataUserView?.createdAt).format('MM/DD/YYYY HH:mm:ss');
-    const formattedUpdatedAt = moment(dataUserView?.updatedAt).format('MM/DD/YYYY HH:mm:ss');
+    const formattedCreatedAt = moment(dataUserView?.createdAt).format('DD/MM/YYYY HH:mm:ss');
+    const formattedUpdatedAt = moment(dataUserView?.updatedAt).format('DD/MM/YYYY HH:mm:ss');
 
     const onClose = () => {
         setOpen(false);
     };
 
-    const items = [
-        {
-            key: '1',
-            label: 'Id',
-            children: dataUserView?._id
-        },
-        {
-            key: '2',
-            label: 'Tên hiển thị',
-            children: dataUserView?.fullName,
-        },
-        {
-            key: '3',
-            label: 'Email',
-            children: dataUserView?.email,
-        },
-        {
-            key: '4',
-            label: 'Số điện thoại',
-            children: dataUserView?.phone,
-        },
-        {
-            key: '5',
-            label: 'Vai trò',
-            children: <Badge status="processing" text={dataUserView?.role} />,
-        },
-
-        {
-            key: '7',
-            label: 'Ngày tạo',
-            children: formattedCreatedAt
-        },
-
-        {
-            key: '8',
-            label: 'Ngày cập nhật',
-            children: formattedUpdatedAt,
-        }
-    ];
-
     return (
         <>
             <Drawer
-                title="Thông tin người dùng"
+                title="THÔNG TIN NGƯỜI DÙNG"
                 onClose={onClose}
                 open={open}
                 width={'50vw'}
             >
-                <Descriptions
-                    bordered
-                    column={1}
-                    items={items}
-                />
+
+                <div className='detai-user-container'>
+
+
+                    <div className='detai-user'>
+                        <Avatar
+                            size={'large'}
+                            className='avatar'
+                            src={urlAvatar}
+                        />
+                        <div className='name-role'>
+                            <span className='name-user'>{dataUserView.fullName}</span>
+                            <span className='role-user'>{dataUserView?.role}</span>
+                        </div>
+                    </div>
+
+                    <Row>
+                        <Col span={12}>
+                            <DescriptionItem title="Id" content={dataUserView._id} />
+                        </Col>
+                        <Col span={12}>
+                            <DescriptionItem title="Email" content={dataUserView.email} />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={12}>
+                            <DescriptionItem title="Số điện thoại" content={dataUserView.phone} />
+                        </Col>
+                        <Col span={12}>
+                            <DescriptionItem title="Ngày tạo" content={formattedCreatedAt} />
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col span={12}>
+                            <DescriptionItem title="Ngày cập nhật" content={formattedUpdatedAt} />
+                        </Col>
+                    </Row>
+                </div>
+
             </Drawer>
         </>
     );

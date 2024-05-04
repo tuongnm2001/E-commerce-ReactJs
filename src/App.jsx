@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from './pages/login';
-import Contact from './pages/manage-books';
+import Contact from './components/Admin/ManageBooks/TableBooks';
 import Register from './pages/register';
 import { Outlet } from "react-router-dom";
 import Footer from './components/Footer';
@@ -15,11 +15,11 @@ import Loading from './components/Loading';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import HeaderPage from './components/Header';
 import LayoutAdmin from './pages/admin/LayoutAdmin';
-import ManageBooks from './pages/manage-books';
+import TableBooks from './components/Admin/ManageBooks/TableBooks';
 import ManageOrders from './pages/manage-orders';
 import DashBoard from './pages/admin';
 import InputSearch from './components/Admin/ManageUsers/InputSearch';
-import UserTable from './components/Admin/ManageUsers/UserTable';
+import TableUser from './components/Admin/ManageUsers/TableUser';
 
 const Layout = () => {
   return (
@@ -78,17 +78,18 @@ export default function App() {
               <DashBoard />
             </ProtectedRoute>
         },
+        ,
+        {
+          path: "user-crud",
+          element: <TableUser />,
+        },
         {
           path: "manage-books",
-          element: <ManageBooks />,
+          element: <TableBooks />,
         },
         {
           path: "manage-orders",
           element: <ManageOrders />,
-        },
-        {
-          path: "user",
-          element: <UserTable />,
         }
       ],
     },

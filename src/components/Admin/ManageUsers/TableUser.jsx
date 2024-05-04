@@ -9,11 +9,11 @@ import { TfiImport } from "react-icons/tfi";
 import ModalAddUser from './ModalAddUser';
 import moment from 'moment';
 import ModalImportDataUser from './ModalImportDataUser';
-import './UserTable.scss'
+import './TableUser.scss'
 import * as XLSX from 'xlsx';
 import ModalEditUser from './ModalEditUser';
 
-const UserTable = () => {
+const TableUser = () => {
     const [listUsers, setListUser] = useState([])
     const [current, setCurrent] = useState(1)
     const [pageSize, setPageSize] = useState(5)
@@ -36,8 +36,7 @@ const UserTable = () => {
             width: 20,
             render: (text, record, index) => {
                 return (
-                    <a onClick={() => { setDataUserView(record); setIsShowModalViewDetail(true); }
-                    }>
+                    <a onClick={() => { setDataUserView(record); setIsShowModalViewDetail(true); }}>
                         {record._id}
                     </a >
                 )
@@ -76,7 +75,7 @@ const UserTable = () => {
                         <EditOutlined onClick={() => handleEditUser(record)} style={{ color: '#ffc107' }} />
 
                         <Popconfirm
-                            title={`Delete A User`}
+                            title={`DELETE A USER`}
                             description={(
                                 <span>
                                     Are you sure you want to delete <span style={{ color: 'red' }}>{record.email}</span> user?
@@ -139,12 +138,12 @@ const UserTable = () => {
         }
     };
 
-    const getAllUserWithPaginate = async (searchFilter) => {
+    const getAllUserWithPaginate = async () => {
         setIsLoading(true)
         let query = `current=${current}&pageSize=${pageSize}`
 
-        if (searchFilter) {
-            query += `&${searchFilter}`
+        if (filter) {
+            query += `&${filter}`
         }
 
         if (sortQuery) {
@@ -165,10 +164,12 @@ const UserTable = () => {
     }, [current, pageSize, filter, sortQuery])
 
     const handleSearch = (query) => {
-        getAllUserWithPaginate(query)
+        setFilter(query)
     }
 
     const handleReLoad = () => {
+        setFilter('')
+        setSortQuery('')
         getAllUserWithPaginate();
     }
 
@@ -198,7 +199,7 @@ const UserTable = () => {
     const renderHeaderTable = () => {
         return (
             <div className='header-table-container'>
-                <span className='table-list-user'>Table List Users</span>
+                <span className='table-list-user'>DANH SÁCH NGƯỜI DÙNG</span>
                 <div className='button-header'>
                     <Button type="primary" onClick={() => handleExportUser()} style={styleButton}><TfiExport />Export</Button>
 
@@ -206,7 +207,7 @@ const UserTable = () => {
 
                     <Button type="primary" onClick={() => handleAddNewUser()}><PlusOutlined />Thêm mới</Button>
 
-                    <Tooltip placement="topLeft" title={'Reload Table'} >
+                    <Tooltip placement="topLeft" title={'Tải lại'} >
                         <Button onClick={() => handleReLoad()}>
                             <ReloadOutlined />
                         </Button>
@@ -273,4 +274,4 @@ const UserTable = () => {
     );
 }
 
-export default UserTable;
+export default TableUser;

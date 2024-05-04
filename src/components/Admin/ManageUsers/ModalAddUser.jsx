@@ -53,7 +53,7 @@ const ModalAddUser = (props) => {
                 confirmLoading={isSubmit}
                 centered
                 okText="Thêm mới"
-                cancelText="Đóng"
+                cancelText="Hủy"
             >
                 <Divider />
                 <Form
