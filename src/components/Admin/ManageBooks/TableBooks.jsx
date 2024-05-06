@@ -6,6 +6,7 @@ import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined } from '@ant
 import { getListBookWithPaginate } from '../../../services/api';
 import moment from 'moment';
 import ModalViewDetailBook from './ModalViewDetailBook';
+import ModalAddNewBook from './ModalAddNewBook';
 
 const TableBooks = () => {
 
@@ -18,6 +19,7 @@ const TableBooks = () => {
     const [sortQuery, setSortQuery] = useState('sort=-updatedAt')
     const [isViewDetailBook, setIsViewDetailBook] = useState(false)
     const [dataDetailBook, setDataDetailBook] = useState({})
+    const [isShowModalAddNewBook, setIsShowModalAddNewBook] = useState(false)
 
     const fetchAllBook = async () => {
 
@@ -137,6 +139,10 @@ const TableBooks = () => {
         fetchAllBook()
     }
 
+    const handleAddNewBook = () => {
+        setIsShowModalAddNewBook(true)
+    }
+
     const renderHeaderTable = () => {
         return (
             <div className='header-table-container'>
@@ -146,7 +152,7 @@ const TableBooks = () => {
 
                     {/* <Button type="primary" onClick={() => handleImportUser()} style={styleButton}><TfiImport />Import</Button> */}
 
-                    <Button type="primary" onClick={() => handleAddNewUser()}><PlusOutlined />Thêm mới</Button>
+                    <Button type="primary" onClick={() => handleAddNewBook()}><PlusOutlined />Thêm mới</Button>
 
                     <Tooltip placement="topLeft" title={'Tải lại'} >
                         <Button onClick={() => handleReload()}>
@@ -189,6 +195,12 @@ const TableBooks = () => {
                 open={isViewDetailBook}
                 setOpen={setIsViewDetailBook}
                 dataDetailBook={dataDetailBook}
+            />
+
+            <ModalAddNewBook
+                open={isShowModalAddNewBook}
+                setOpen={setIsShowModalAddNewBook}
+                fetchAllBook={fetchAllBook}
             />
         </>
     );

@@ -15,9 +15,6 @@ const ModalViewDetailUser = (props) => {
     const { open, setOpen, dataUserView } = props;
     const urlAvatar = `${import.meta.env.VITE_BACKEND_URL}/images/avatar/${dataUserView?.avatar}`
 
-
-    console.log(dataUserView);
-
     //format createdAt , updatedAt
     const formattedCreatedAt = moment(dataUserView?.createdAt).format('DD/MM/YYYY HH:mm:ss');
     const formattedUpdatedAt = moment(dataUserView?.updatedAt).format('DD/MM/YYYY HH:mm:ss');

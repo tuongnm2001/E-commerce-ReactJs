@@ -48,8 +48,30 @@ const getListBookWithPaginate = (query) => {
     return axios.get(`/api/v1/book?${query}`)
 }
 
+const getAllCategory = () => {
+    return axios.get(`/api/v1/database/category`)
+}
+
+const callUploadBookImg = (fileImg) => {
+    const bodyFormData = new FormData();
+    bodyFormData.append('fileImg', fileImg);
+    return axios({
+        method: 'post',
+        url: '/api/v1/file/upload',
+        data: bodyFormData,
+        headers: {
+            "Content-Type": "multipart/form-data",
+            "upload-type": "book"
+        },
+    });
+}
+
+const createABook = (mainText, author, price, category, quantity, sold, thumbnail, slider) => {
+    return axios.post(`/api/v1/book`, { mainText, author, price, category, quantity, sold, thumbnail, slider })
+}
+
 export {
     register, login, fetchAccount, logout, getUserWithPaginate,
     postAddNewUser, postCreateListUserBulk, putUpdateUser, deleteAUser,
-    getListBookWithPaginate
+    getListBookWithPaginate, getAllCategory, callUploadBookImg, createABook
 }

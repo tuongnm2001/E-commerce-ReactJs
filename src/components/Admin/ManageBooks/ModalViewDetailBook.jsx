@@ -15,8 +15,6 @@ const ModalViewDetailBook = (props) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
 
-    console.log(dataDetailBook);
-
     const getBase64 = (file) =>
         new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -111,19 +109,29 @@ const ModalViewDetailBook = (props) => {
         },
         {
             key: '5',
+            label: 'Số lượng',
+            children: dataDetailBook?.quantity,
+        },
+        {
+            key: '6',
+            label: 'Đã bán',
+            children: dataDetailBook?.sold,
+        },
+        {
+            key: '7',
             label: 'Thể loại',
             span: 2,
             children: <Badge status="processing" text={dataDetailBook?.category} />,
         },
 
         {
-            key: '7',
+            key: '8',
             label: 'Ngày tạo',
             children: formattedCreatedAt
         },
 
         {
-            key: '8',
+            key: '9',
             label: 'Ngày cập nhật',
             children: formattedUpdatedAt,
         }
