@@ -75,10 +75,10 @@ const TableUser = () => {
                         <EditOutlined onClick={() => handleEditUser(record)} style={{ color: '#ffc107' }} />
 
                         <Popconfirm
-                            title={`DELETE A USER`}
+                            title={`XÓA NGƯỜI DÙNG`}
                             description={(
                                 <span>
-                                    Are you sure you want to delete <span style={{ color: 'red' }}>{record.email}</span> user?
+                                    Bạn có chắc muốn xóa người dùng <span style={{ color: 'red' }}>{record.email}</span> không?
                                 </span>
                             )}
                             icon={
@@ -113,6 +113,7 @@ const TableUser = () => {
             setConfirmLoading(false);
         } else {
             message.error(res.message)
+            setConfirmLoading(false);
         }
     };
 

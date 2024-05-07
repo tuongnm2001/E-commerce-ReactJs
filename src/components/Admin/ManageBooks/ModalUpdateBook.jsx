@@ -1,20 +1,61 @@
 import React, { useEffect, useState } from 'react';
 import { Image, Col, Divider, Form, Input, InputNumber, Modal, Row, Select, Space, Upload, notification, message } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { callUploadBookImg, createABook, getAllCategory } from '../../../services/api';
+import { callUploadBookImg, getAllCategory, putUpdateBook } from '../../../services/api';
+import { v4 as uuidv4 } from 'uuid';
 
-const ModalAddNewBook = (props) => {
+const ModalUpdateBook = (props) => {
 
-    const { open, setOpen } = props;
+    const { open, setOpen, dataUpdateBook } = props;
     const [listCategory, setListCategory] = useState([])
     const [loading, setLoading] = useState(false);
     const [loadingSlider, setLoadingSlider] = useState(false);
     const [imageUrl, setImageUrl] = useState("");
-
     const [dataThumbnail, setDataThumbnail] = useState({})
     const [dataSlider, setDataSlider] = useState([])
-
+    const [initForm, setInitForm] = useState([])
     const [form] = Form.useForm()
+
+    useEffect(() => {
+        if (dataUpdateBook?._id) {
+            const arrThumbnail = [
+                {
+                    uid: uuidv4(),
+                    name: dataUpdateBook.thumbnail,
+                    status: 'done',
+                    url: `${import.meta.env.VITE_BACKEND_URL}/images/book/${dataUpdateBook?.thumbnail}`
+                }
+            ]
+
+            const arrSlider = dataUpdateBook?.slider?.map(item => {
+                return {
+                    uid: uuidv4(),
+                    name: item,
+                    status: 'done',
+                    url: `${import.meta.env.VITE_BACKEND_URL}/images/book/${item}`
+                }
+            })
+
+            const init = {
+                _id: dataUpdateBook._id,
+                mainText: dataUpdateBook.mainText,
+                author: dataUpdateBook.author,
+                price: dataUpdateBook.price,
+                category: dataUpdateBook.category,
+                quantity: dataUpdateBook.quantity,
+                sold: dataUpdateBook.sold,
+                thumbnail: { fileList: arrThumbnail },
+                slider: { fileList: arrSlider },
+            }
+            setInitForm(init);
+            setDataThumbnail(arrThumbnail)
+            setDataSlider(arrSlider)
+            form.setFieldsValue(init)
+        }
+        return () => {
+            form.resetFields()
+        }
+    }, [dataUpdateBook])
 
     const fetchAllCategory = async () => {
         const res = await getAllCategory();
@@ -41,6 +82,12 @@ const ModalAddNewBook = (props) => {
     const [previewTitle, setPreviewTitle] = useState('');
 
     const handlePreview = async (file) => {
+
+        if (file.url && !file.originFileObj) {
+            setPreviewImage(file.url)
+            setPreviewOpen(true);
+            setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
+        }
 
         getBase64(file.originFileObj, (url) => {
             setPreviewImage(url);
@@ -108,7 +155,19 @@ const ModalAddNewBook = (props) => {
         }
     };
 
+    const handleRemoveFile = (file, type) => {
+        if (type === "thumbnail") {
+            setDataThumbnail([])
+        }
+
+        if (type === 'slider') {
+            const newSlider = dataSlider.filter(x => x.uid !== file.uid);
+            setDataSlider(newSlider);
+        }
+    }
+
     const onFinish = async (values) => {
+
         if (dataThumbnail.length === 0) {
             notification.error({
                 message: 'Có lỗi xảy ra',
@@ -125,15 +184,15 @@ const ModalAddNewBook = (props) => {
             return;
         }
 
-        const { mainText, author, price, category, quantity, sold } = values;
+        const { _id, mainText, author, price, category, quantity, sold } = values;
         const imgThumbnail = dataThumbnail[0].name;
         const imgSlider = dataSlider.map(item => item.name)
 
         setLoading(true)
-        const res = await createABook(mainText, author, price, category, quantity, sold, imgThumbnail, imgSlider);
+        const res = await putUpdateBook(_id, mainText, author, price, category, quantity, sold, imgThumbnail, imgSlider);
         if (res && res.data) {
-            message.success('Thêm sản phẩm thành công')
             props.fetchAllBook();
+            message.success('Cập nhật sản phẩm thành công')
             setOpen(false)
             setLoading(false)
             form.resetFields();
@@ -149,13 +208,13 @@ const ModalAddNewBook = (props) => {
     return (
         <>
             <Modal
-                title="THÊM MỚI SẢN PHẨM"
+                title="CẬP NHẬT SẢN PHẨM"
                 open={open}
                 onOk={() => { form.submit() }}
                 onCancel={() => { setOpen(false); form.resetFields() }}
                 centered
                 maskClosable={false}
-                okText="Thêm mới"
+                okText="Cập nhật"
                 cancelText="Hủy"
                 width={800}
                 confirmLoading={loading}
@@ -167,7 +226,17 @@ const ModalAddNewBook = (props) => {
                     name="add-new-book"
                     autoComplete="off"
                 >
-                    <Row gutter={24}>
+                    <Row gutter={15}>
+                        <Col hidden>
+                            <Form.Item
+                                labelCol={{ span: 24 }} //whole column
+                                label="Id"
+                                name="_id"
+                            >
+                                <Input />
+                            </Form.Item>
+                        </Col>
+
                         <Col span={12}>
                             <Form.Item
                                 labelCol={{ span: 24 }} //whole column
@@ -209,7 +278,6 @@ const ModalAddNewBook = (props) => {
                                 labelCol={{ span: 24 }} //whole column
                                 label="Giá sản phẩm"
                                 name="price"
-
                                 rules={
                                     [
                                         {
@@ -304,6 +372,8 @@ const ModalAddNewBook = (props) => {
                                     customRequest={handleUploadFileThumbnail}
                                     beforeUpload={beforeUpload}
                                     onChange={handleChange}
+                                    onRemove={(file) => handleRemoveFile(file, "thumbnail")}
+                                    defaultFileList={initForm?.thumbnail?.fileList ?? []}
                                 >
                                     <div>
                                         {loading ? <LoadingOutlined /> : <PlusOutlined />}
@@ -328,6 +398,8 @@ const ModalAddNewBook = (props) => {
                                     customRequest={handleUploadFileSlider}
                                     beforeUpload={beforeUpload}
                                     onChange={(info) => handleChange(info, 'slider')}
+                                    onRemove={(file) => handleRemoveFile(file, "slider")}
+                                    defaultFileList={initForm?.slider?.fileList ?? []}
                                 >
                                     <div>
                                         {loadingSlider ? <LoadingOutlined /> : <PlusOutlined />}
@@ -357,4 +429,4 @@ const ModalAddNewBook = (props) => {
     );
 }
 
-export default ModalAddNewBook;
+export default ModalUpdateBook;

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Tooltip } from 'antd';
+import { Table, Button, Tooltip, Popconfirm, message, notification } from 'antd';
 import InputSearchBooks from './InputSearchBooks';
 import { TfiExport } from 'react-icons/tfi';
-import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
-import { getListBookWithPaginate } from '../../../services/api';
+import { DeleteOutlined, EditOutlined, PlusOutlined, QuestionCircleOutlined, ReloadOutlined } from '@ant-design/icons';
+import { deleteABook, getListBookWithPaginate } from '../../../services/api';
 import moment from 'moment';
 import ModalViewDetailBook from './ModalViewDetailBook';
 import ModalAddNewBook from './ModalAddNewBook';
+import ModalUpdateBook from './ModalUpdateBook';
 
 const TableBooks = () => {
 
@@ -18,8 +19,10 @@ const TableBooks = () => {
     const [filter, setFilter] = useState('')
     const [sortQuery, setSortQuery] = useState('sort=-updatedAt')
     const [isViewDetailBook, setIsViewDetailBook] = useState(false)
-    const [dataDetailBook, setDataDetailBook] = useState({})
     const [isShowModalAddNewBook, setIsShowModalAddNewBook] = useState(false)
+    const [dataDetailBook, setDataDetailBook] = useState({})
+    const [isShowModalUpdateBook, setIsShowModalUpdateBook] = useState(false)
+    const [dataUpdateBook, setDataUpdateBook] = useState([])
 
     const fetchAllBook = async () => {
 
@@ -95,15 +98,60 @@ const TableBooks = () => {
             title: 'Actions',
             render: (text, record, index) => {
                 return (
-                    <>
-                        <EditOutlined style={{ color: '#ffc107' }} />
-                        <DeleteOutlined style={{ color: '#dc3545' }} />
-                    </>
+                    <div className='btn-action'>
+                        <EditOutlined onClick={() => handleUpdateBook(record)} style={{ color: '#ffc107' }} />
+
+                        <Popconfirm
+                            title="XÓA SẢN PHẨM"
+                            description={(
+                                <span>
+                                    Bạn có chắc muốn xóa sản phẩm <span style={{ color: 'red' }}>{record.mainText}</span> không?
+                                </span>
+                            )}
+                            icon={
+                                < QuestionCircleOutlined
+                                    style={{
+                                        color: 'red',
+                                    }}
+                                />
+                            }
+                            onConfirm={() => confirm(record._id)}
+                            okText="Xóa"
+                            cancelText="Hủy"
+                            okButtonProps={{
+                                loading: isLoading
+                            }}
+                        >
+                            <DeleteOutlined style={{ color: '#dc3545' }} />
+                        </Popconfirm>
+                    </div>
 
                 )
             }
         }
     ];
+
+    const handleUpdateBook = (data) => {
+        setIsShowModalUpdateBook(true)
+        setDataUpdateBook(data)
+    }
+
+    //delete book
+    const confirm = async (id) => {
+        setIsLoading(true);
+        const res = await deleteABook(id);
+        if (res && res.data) {
+            message.success('Xóa sản phẩm thành công');
+            fetchAllBook();
+            setIsLoading(false);
+        } else {
+            notification.error({
+                message: 'Có lỗi xảy ra',
+                description: res.message
+            })
+            setIsLoading(false);
+        }
+    };
 
     const handleViewDetailBook = (data) => {
         setIsViewDetailBook(true)
@@ -139,10 +187,6 @@ const TableBooks = () => {
         fetchAllBook()
     }
 
-    const handleAddNewBook = () => {
-        setIsShowModalAddNewBook(true)
-    }
-
     const renderHeaderTable = () => {
         return (
             <div className='header-table-container'>
@@ -152,7 +196,7 @@ const TableBooks = () => {
 
                     {/* <Button type="primary" onClick={() => handleImportUser()} style={styleButton}><TfiImport />Import</Button> */}
 
-                    <Button type="primary" onClick={() => handleAddNewBook()}><PlusOutlined />Thêm mới</Button>
+                    <Button type="primary" onClick={() => setIsShowModalAddNewBook(true)}><PlusOutlined />Thêm mới</Button>
 
                     <Tooltip placement="topLeft" title={'Tải lại'} >
                         <Button onClick={() => handleReload()}>
@@ -200,6 +244,13 @@ const TableBooks = () => {
             <ModalAddNewBook
                 open={isShowModalAddNewBook}
                 setOpen={setIsShowModalAddNewBook}
+                fetchAllBook={fetchAllBook}
+            />
+
+            <ModalUpdateBook
+                open={isShowModalUpdateBook}
+                setOpen={setIsShowModalUpdateBook}
+                dataUpdateBook={dataUpdateBook}
                 fetchAllBook={fetchAllBook}
             />
         </>
