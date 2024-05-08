@@ -5,10 +5,12 @@ body {
     padding  : 0;
 }
 
+
 .layout-app {
-    padding  : 0 48px;
+    background-color       : #f5f5fa;
+    // height            : 100vh;
 
     .outlet {
-        padding  : 25px 0;
+        padding  : 25px 24px;
     }
 }

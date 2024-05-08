@@ -346,7 +346,6 @@ const ModalUpdateBook = (props) => {
                                 labelCol={{ span: 24 }} //whole column
                                 label="Đã bán"
                                 name="sold"
-                                initialValue={0}
                             >
                                 <InputNumber
                                     min={0}

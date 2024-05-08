@@ -192,7 +192,7 @@ const TableBooks = () => {
             <div className='header-table-container'>
                 <span className='table-list-user'>DANH SÁCH SẢN PHẨM</span>
                 <div className='button-header'>
-                    <Button type="primary" onClick={() => handleExportUser()} style={styleButton}><TfiExport />Export</Button>
+                    {/* <Button type="primary" onClick={() => handleExportUser()} style={styleButton}><TfiExport />Export</Button> */}
 
                     {/* <Button type="primary" onClick={() => handleImportUser()} style={styleButton}><TfiImport />Import</Button> */}
 

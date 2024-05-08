@@ -7,7 +7,7 @@ const { Footer } = Layout;
 const FooterPage = () => {
     return (
         <Layout>
-            <Footer>
+            <Footer style={{ position: 'relative', bottom: 0 }}>
                 Ant Design ©{new Date().getFullYear()} Created by NMT <HeartTwoTone twoToneColor="#eb2f96" />
             </Footer>
         </Layout>
