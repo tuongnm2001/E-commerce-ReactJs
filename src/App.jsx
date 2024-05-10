@@ -19,6 +19,8 @@ import TableBooks from './components/Admin/ManageBooks/TableBooks';
 import ManageOrders from './pages/manage-orders';
 import DashBoard from './pages/admin';
 import TableUser from './components/Admin/ManageUsers/TableUser';
+import BookDetail from './pages/book';
+import "react-image-gallery/styles/scss/image-gallery.scss";
 
 const Layout = () => {
   return (
@@ -60,8 +62,8 @@ export default function App() {
       children: [
         { index: true, element: <Home /> },
         {
-          path: "contact",
-          element: <Contact />,
+          path: "book/:slug",
+          element: <BookDetail />,
         },
       ],
     },

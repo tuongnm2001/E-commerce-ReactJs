@@ -21,13 +21,6 @@ const HeaderPage = () => {
     const urlAvatar = `${import.meta.env.VITE_BACKEND_URL}/images/avatar/${user?.avatar}`
 
 
-    const showDrawer = () => {
-        setOpen(true);
-    };
-    const onClose = () => {
-        setOpen(false);
-    };
-
     let items = [
         {
             label: (
@@ -38,7 +31,6 @@ const HeaderPage = () => {
                         <span style={{ fontSize: '1rem', fontWeight: '400' }}>{user.fullName}</span>
                         <span style={{ fontSize: '12px', color: '#32475c99' }}>{user.role}</span>
                     </div>
-
                 </Space>
             ),
             key: '0',
@@ -81,15 +73,15 @@ const HeaderPage = () => {
         <>
             <div className='navbar-container'>
                 <div className='header'>
-                    <div className="logo">
+                    <div className="logo" onClick={() => navigate('/')}>
                         <FaReact className="rotating-icon" style={{ color: '#32475c' }} />
-                        <MenuOutlined className="menu-icon" type="primary" onClick={showDrawer} />
+                        <MenuOutlined className="menu-icon" type="primary" onClick={() => setOpen(true)} />
                         <span className="title">YNWA</span>
                     </div>
 
                     <Search
                         placeholder="Tìm kiếm sản phẩm"
-                        onSearch={value => console.log(value)}
+                        onSearch={(values) => console.log(values)}
                         style={{ width: 650, marginLeft: '20px' }}
                         size="large"
                     />
@@ -143,7 +135,7 @@ const HeaderPage = () => {
                     </div>
                 </Space>
             }
-                onClose={onClose}
+                onClose={() => setOpen(false)}
                 open={open}
                 placement='left'
             >

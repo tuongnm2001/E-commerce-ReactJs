@@ -213,6 +213,7 @@ const TableBooks = () => {
             <InputSearchBooks
                 handleSearchBooks={handleSearchBooks}
             />
+
             <Table
                 title={renderHeaderTable}
                 columns={columns}
