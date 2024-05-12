@@ -12,7 +12,7 @@ const Home = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [listCategory, setListCategory] = useState({})
     const [listBook, setListBook] = useState({})
-    const [sortQuery, setSortQuery] = useState('sort=-sold')
+    const [sortQuery, setSortQuery] = useState('sort=-createdAt')
     const [current, setCurrent] = useState(1)
     const [pageSize, setPageSize] = useState(10)
     const [total, setTotal] = useState({})
@@ -55,13 +55,13 @@ const Home = () => {
 
     const items = [
         {
-            key: 'sort=-sold',
-            label: `Phổ biến`,
+            key: 'sort=-createdAt',
+            label: `Hàng Mới`,
             children: <></>,
         },
         {
-            key: 'sort=-createdAt',
-            label: `Hàng Mới`,
+            key: 'sort=-sold',
+            label: `Phổ biến`,
             children: <></>,
         },
         {
@@ -267,7 +267,7 @@ const Home = () => {
                         <div className="content-right">
                             <Row>
                                 <Tabs
-                                    defaultActiveKey="sort=-sold"
+                                    defaultActiveKey="sort=-createdAt"
                                     items={items}
                                     onChange={(value) => { setSortQuery(value) }}
                                     style={{ overflowX: 'auto' }}

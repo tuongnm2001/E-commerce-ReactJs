@@ -4,7 +4,7 @@ import ReactImageGallery from 'react-image-gallery';
 
 const ModalGallery = (props) => {
 
-    const { open, setOpen, images } = props;
+    const { open, setOpen, images, dataBook } = props;
 
     const handleOk = () => {
 
@@ -13,7 +13,7 @@ const ModalGallery = (props) => {
     return (
         <>
             <Modal
-                width={'60vw'}
+                // width={'60vw'}
                 open={open}
                 onOk={handleOk}
                 onCancel={() => setOpen(false)}
@@ -21,14 +21,13 @@ const ModalGallery = (props) => {
                 centered
                 closable={false}
                 footer={null}
+                title={dataBook.mainText}
             >
                 <ReactImageGallery
                     thumbnailPosition='right'
                     items={images}
                     showPlayButton={false} //hide play button
                     showFullscreenButton={false} //hide fullscreen button
-                    // renderLeftNav={() => <></>} //left arrow === <> </>
-                    // renderRightNav={() => <></>}//right arrow === <> </>
                     slideOnThumbnailOver={true}  //onHover => auto scroll images
                 />
             </Modal >

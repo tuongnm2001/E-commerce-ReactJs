@@ -13,11 +13,11 @@
         border-radius     : 8px;
         display           : flex;
         flex-direction    : column;
-        gap               : 10px;
+        gap               : 15px;
 
         .author {
             color        : #242424;
-            font-size    : 16px;
+            font-size    : 15px;
             font-weight  : 400;
         }
 
@@ -29,6 +29,9 @@
         }
 
         .rating {
+            display  : flex;
+            gap      : 5px;
+
             .sold {
                 color      : #787878;
                 font-size  : 14px;
@@ -42,11 +45,20 @@
             line-height  : 36px;
         }
 
+        .cate {
+            display  : flex;
+            gap      : 35px;
+        }
+
         .delivery {
             display  : flex;
             gap      : 35px;
 
-            .right-side {}
+            .right-side {
+                display      : flex;
+                align-items  : center;
+                gap          : 5px;
+            }
         }
 
         .quantity {
@@ -135,8 +147,29 @@
             }
         }
     }
+
+    .product-same {
+        padding           : 20px;
+        background-color  : #ffffff;
+        border-radius     : 8px;
+        margin-top        : 20px;
+
+        .title-product-same {
+            color        : #27272a;
+            font-size    : 16px;
+            font-weight  : 600;
+            line-height  : 24px;
+        }
+
+        .content-product-same {
+            display    : flex;
+            flex-wrap  : wrap;
+            gap        : 20px;
+        }
+    }
 }
 
+.cate,
 .delivery,
 .quantity {
     .left-side {
@@ -145,4 +178,17 @@
         font-weight  : 400;
         width        : 80px;
     }
+}
+
+
+.ant-card-body {
+    display         : flex !important;
+    flex-direction  : column !important;
+    gap             : 5px !important;
+    padding         : 15px !important;
+}
+
+.ant-card-meta-title {
+    font-size      : 12px !important;
+    margin-bottom  : 0 !important;
 }
