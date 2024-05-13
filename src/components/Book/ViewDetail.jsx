@@ -1,7 +1,7 @@
 import ImageGallery from "react-image-gallery";
 import { Breadcrumb, Card, Col, Divider, Flex, Rate, Row, Tag } from 'antd';
 import { CheckCircleOutlined, HomeOutlined, LikeOutlined, MinusOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import './view-detail.scss'
 import ModalGallery from "./ModalGallery";
 import { useState } from "react";
@@ -10,16 +10,17 @@ import Meta from "antd/es/card/Meta";
 import { useEffect } from "react";
 import { getListBookWithPaginate } from "../../services/api";
 import imgFreeShipping from '../../assets/free-shipping.png'
+import { useDispatch } from "react-redux";
+import { doAddBookAction } from "../../redux/order/orderSlice";
 
 const ViewDetail = (props) => {
-
+    const navigate = useNavigate()
     const { dataBook } = props;
     const images = dataBook?.items ?? [];
     const [open, setOpen] = useState(false)
     const [filter, setFilter] = useState({})
-    const handleOnClickImage = () => {
-        setOpen(true)
-    }
+    const [currentQuantity, setCurrentQuantity] = useState(1)
+    const dispatch = useDispatch();
 
     const fetchBook = async () => {
         let query = `current=${1}&pageSize=${10}&category=${dataBook?.category}`;
@@ -41,8 +42,6 @@ const ViewDetail = (props) => {
     useEffect(() => {
         fetchBook()
     }, [dataBook])
-
-    console.log(filter);
 
     const nonAccentVietnamese = (str) => {
         str = str.replace(/A|Á|À|Ã|Ạ|Â|Ấ|Ầ|Ẫ|Ậ|Ă|Ắ|Ằ|Ẵ|Ặ/g, "A");
@@ -84,6 +83,31 @@ const ViewDetail = (props) => {
         return str;
     }
 
+    const handleChangeButton = (type) => {
+        if (type === 'MINUS') {
+            if (currentQuantity - 1 <= 0) return;
+            setCurrentQuantity(currentQuantity - 1)
+        }
+
+        if (type === 'PLUS') {
+            if (currentQuantity === +dataBook.quantity) return; //max
+            setCurrentQuantity(currentQuantity + 1)
+        }
+    }
+
+    const handleChangeInput = (value) => {
+        if (!isNaN(value)) {
+            if (+value > 0 && +value < dataBook.quantity) {
+                setCurrentQuantity(+value)
+            }
+        }
+        console.log(currentQuantity);
+    }
+
+    const handleAddToCart = (quantity, book) => {
+        dispatch(doAddBookAction({ quantity, detail: book, _id: book._id }))
+    }
+
     return (
         <>
             {
@@ -111,7 +135,8 @@ const ViewDetail = (props) => {
                                 <Col md={10}>
                                     <div className="view-detail-content-left" >
                                         <ImageGallery
-                                            onClick={() => handleOnClickImage()}
+                                            additionalClass="custom-image-gallery"
+                                            onClick={() => setOpen(true)}
                                             items={images}
                                             showPlayButton={false} //hide play button
                                             showFullscreenButton={false} //hide fullscreen button
@@ -124,7 +149,7 @@ const ViewDetail = (props) => {
 
                                 <Col md={14}>
                                     <div className="view-detail-content-right">
-                                        <Flex gap="4px" wrap style={{ fontWeight: 700 }}>
+                                        <Flex gap="4px" style={{ fontWeight: 700 }}>
                                             <Tag icon={<LikeOutlined />} color="error">
                                                 Top Deal
                                             </Tag>
@@ -170,13 +195,13 @@ const ViewDetail = (props) => {
                                         <div className='quantity'>
                                             <span className='left-side'>Số lượng</span>
                                             <span className='right-side'>
-                                                <button className="btn-minus"><MinusOutlined /></button>
-                                                <input className="inputValue" defaultValue={1} />
-                                                <button className="btn-plus"><PlusOutlined /></button>
+                                                <button className="btn-minus" onClick={() => handleChangeButton('MINUS')}><MinusOutlined /></button>
+                                                <input className="inputValue" onChange={(event) => handleChangeInput(event.target.value)} value={currentQuantity} />
+                                                <button className="btn-plus" onClick={() => handleChangeButton('PLUS')}><PlusOutlined /></button>
                                             </span>
                                         </div>
                                         <div className='buy'>
-                                            <button className='cart'>
+                                            <button className='cart' onClick={() => handleAddToCart(currentQuantity, dataBook)}>
                                                 <span>Thêm vào giỏ hàng</span>
                                             </button>
                                             <button className='now'>Mua ngay</button>
@@ -192,32 +217,29 @@ const ViewDetail = (props) => {
                                                         filter && filter.length > 0 &&
                                                         filter.map((item, index) => {
                                                             return (
-                                                                <Link
-                                                                    to={`/book/${convertSlug(item?.mainText)}?id=${item?._id}`}
-                                                                    key={`product-same${index}`}
+                                                                <Card
+                                                                    key={`product-same-${index}`}
+                                                                    onClick={() => { navigate(`/book/${convertSlug(item?.mainText)}?id=${item?._id}`), setCurrentQuantity(1) }}
+                                                                    hoverable
+                                                                    style={{
+                                                                        marginTop: 10,
+                                                                        width: 120,
+                                                                    }}
+                                                                    cover={
+                                                                        <img
+                                                                            alt="example"
+                                                                            src={`${import.meta.env.VITE_BACKEND_URL}/images/book/${item?.thumbnail}`}
+                                                                            style={{ height: 100, objectFit: 'contain', marginTop: 10 }}
+                                                                        />
+                                                                    }
                                                                 >
-                                                                    <Card
-                                                                        hoverable
-                                                                        style={{
-                                                                            marginTop: 10,
-                                                                            width: 120,
-                                                                        }}
-                                                                        cover={
-                                                                            <img
-                                                                                alt="example"
-                                                                                src={`${import.meta.env.VITE_BACKEND_URL}/images/book/${item?.thumbnail}`}
-                                                                                style={{ height: 100, objectFit: 'contain', marginTop: 10 }}
-                                                                            />
-                                                                        }
-                                                                    >
-                                                                        <Meta title={item.mainText} description={
-                                                                            <Rate value={5} disabled style={{ color: '#ffce3d', fontSize: 10 }} />
-                                                                        } />
-                                                                        <span>
-                                                                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}
-                                                                        </span>
-                                                                    </Card>
-                                                                </Link>
+                                                                    <Meta title={item.mainText} description={
+                                                                        <Rate value={5} disabled style={{ color: '#ffce3d', fontSize: 10 }} />
+                                                                    } />
+                                                                    <span>
+                                                                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}
+                                                                    </span>
+                                                                </Card>
                                                             )
                                                         })
                                                     }

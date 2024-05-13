@@ -21,6 +21,7 @@ import DashBoard from './pages/admin';
 import TableUser from './components/Admin/ManageUsers/TableUser';
 import BookDetail from './pages/book';
 import "react-image-gallery/styles/scss/image-gallery.scss";
+import './global.scss'
 
 const Layout = () => {
   return (

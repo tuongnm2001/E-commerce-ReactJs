@@ -289,7 +289,7 @@ const Home = () => {
                                                         {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}
                                                     </div>
                                                     <div className='rating'>
-                                                        <Rate value={5} disabled style={{ color: '#ffce3d', fontSize: 10 }} />
+                                                        <Rate value={5} disabled style={{ color: '#ffce3d', fontSize: 8, marginRight: 0 }} />
                                                         <span className="separator "></span>
                                                         <span className="sold">Đã bán {item.sold}</span>
                                                     </div>

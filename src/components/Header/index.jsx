@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Avatar, Input, Badge, Dropdown, Space, message, Drawer, Divider } from 'antd';
+import { Avatar, Input, Badge, Dropdown, Space, message, Drawer, Divider, Popover, Button } from 'antd';
 import { UserOutlined, ShoppingCartOutlined, MehOutlined, MenuOutlined, ProfileOutlined, LogoutOutlined, BarChartOutlined } from '@ant-design/icons';
 import './header.scss';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,6 +17,7 @@ const HeaderPage = () => {
     const [open, setOpen] = useState(false);
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const carts = useSelector(state => state.order.carts)
 
     const urlAvatar = `${import.meta.env.VITE_BACKEND_URL}/images/avatar/${user?.avatar}`
 
@@ -69,6 +70,62 @@ const HeaderPage = () => {
         }
     }
 
+    const content = (
+        <div className='cart-container'>
+            <div className='content-up'>
+                <div className='content-left-cart'>
+                    <div className='img-cart'>
+                        <img src="https://picsum.photos/id/1018/1000/600/" alt="" />
+                    </div>
+
+                    <div className='mainText-cart'>
+                        <span>Sách Luật - Nhật ký trong tùSách Luật - Nhật ký trong tùSách Luật - Nhật ký trong tù</span>
+                    </div>
+                </div>
+
+                <div className='price-cart'>
+                    <span>300.000đ</span>
+                </div>
+            </div>
+
+            <div className='content-up'>
+                <div className='content-left-cart'>
+                    <div className='img-cart'>
+                        <img src="https://picsum.photos/id/1018/1000/600/" alt="" />
+                    </div>
+
+                    <div className='mainText-cart'>
+                        <span>Sách Luật - Nhật ký trong tù</span>
+                    </div>
+                </div>
+
+                <div className='price-cart'>
+                    <span>300.000đ</span>
+                </div>
+            </div>
+
+            <div className='content-up'>
+                <div className='content-left-cart'>
+                    <div className='img-cart'>
+                        <img src="https://picsum.photos/id/1018/1000/600/" alt="" />
+                    </div>
+
+                    <div className='mainText-cart'>
+                        <span>Sách Luật - Nhật ký trong tù</span>
+                    </div>
+                </div>
+
+                <div className='price-cart'>
+                    <span>300.000đ</span>
+                </div>
+            </div>
+
+            <div className='content-down'>
+                <Button type='primary'>Xem giỏ hàng</Button>
+            </div>
+        </div>
+    );
+
     return (
         <>
             <div className='navbar-container'>
@@ -87,9 +144,21 @@ const HeaderPage = () => {
                     />
 
                     <div className='cart'>
-                        <Badge count={1} size="small">
-                            <ShoppingCartOutlined style={{ fontSize: '18px' }} />
-                        </Badge>
+                        <Popover
+                            title={<span className="custom-title-cart">Sản phẩm mới thêm</span>}
+                            placement="bottomRight"
+                            content={content}
+                            arrow={true}
+                        >
+                            <Badge
+                                count={carts?.length ?? 0}
+                                size="small"
+                                showZero
+                            >
+                                <ShoppingCartOutlined style={{ fontSize: '18px' }} />
+                            </Badge>
+                        </Popover>
+
                     </div>
 
                     {

@@ -1,0 +1,42 @@
+.cart-container {
+    margin-top  : 20px;
+
+    .content-up {
+        width            : 350px;
+        display          : flex;
+        justify-content  : space-between;
+        margin-top       : 10px;
+        gap              : 20px;
+
+        .content-left-cart {
+            display      : flex;
+            gap          : 10px;
+            align-items  : flex-start;
+
+            .img-cart {
+                img {
+                    height  : 41px;
+                    width   : 41px;
+                }
+            }
+
+            .mainText-cart {
+                width          : 200px; //Đặt chiều rộng tối đa của phần tử
+                white-space    : nowrap; // Ngăn chữ từ bị xuống dòng
+                overflow       : hidden; //Ẩn nội dung bị tràn
+                text-overflow  : ellipsis; //Hiển thị dấu ba chấm (...)
+            }
+        }
+    }
+
+    .content-down {
+        margin-top       : 20px;
+        display          : flex;
+        justify-content  : end;
+    }
+}
+
+.custom-title-cart {
+    margin-bottom  : 10px;
+    color          : #00000042;
+}

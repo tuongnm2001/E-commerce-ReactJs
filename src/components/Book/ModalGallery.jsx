@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Button, Modal } from 'antd';
+import { Button, Modal, Row } from 'antd';
 import ReactImageGallery from 'react-image-gallery';
+import './ModalGallery.scss'
 
 const ModalGallery = (props) => {
 
@@ -13,7 +14,6 @@ const ModalGallery = (props) => {
     return (
         <>
             <Modal
-                // width={'60vw'}
                 open={open}
                 onOk={handleOk}
                 onCancel={() => setOpen(false)}
@@ -22,8 +22,11 @@ const ModalGallery = (props) => {
                 closable={false}
                 footer={null}
                 title={dataBook.mainText}
+                className='custom-modal-gallery'
+                width={800}
             >
                 <ReactImageGallery
+                    additionalClass='modal-Img'
                     thumbnailPosition='right'
                     items={images}
                     showPlayButton={false} //hide play button
