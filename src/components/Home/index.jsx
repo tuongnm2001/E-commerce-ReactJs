@@ -1,10 +1,13 @@
-import { Button, Checkbox, Col, Divider, Form, InputNumber, Rate, Row, Tabs, Pagination, Tooltip, Spin } from "antd";
+import { Button, Checkbox, Col, Divider, Form, InputNumber, Rate, Row, Tabs, Pagination, Tooltip, Spin, Carousel } from "antd";
 import './home.scss'
 import { useForm } from "antd/es/form/Form";
 import { useEffect, useState } from "react";
 import { getAllCategory, getListBookWithPaginate } from "../../services/api";
 import { ReloadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import banner1 from '../../assets/banner1.jpg'
+import banner2 from '../../assets/banner2.jpg'
+import banner3 from '../../assets/banner3.jpg'
 
 const Home = () => {
 
@@ -161,6 +164,24 @@ const Home = () => {
         navigate(`/book/${slug}?id=${book._id}`)
     }
 
+    const contentStyle = {
+        margin: 0,
+        height: '260px',
+        color: '#fff',
+        lineHeight: '160px',
+        textAlign: 'center',
+        background: '#364d79',
+        borderRadius: '8px'
+    };
+
+    const styleImg = {
+        borderRadius: '8px',
+        objectFit: 'cover',
+        height: '260px',
+        width: '100%'
+
+    }
+
     return (
         <>
             <Row gutter={[20, 20]} className="homepage-container">
@@ -263,6 +284,28 @@ const Home = () => {
                 </Col>
 
                 <Col className="gutter-row" md={19} sm={24} xs={24}>
+
+                    <Carousel autoplay>
+                        <div >
+                            <h3 style={contentStyle}>
+                                <img src={banner1} alt="" style={styleImg} />
+                            </h3>
+                        </div>
+                        <div>
+                            <h3 style={contentStyle}>
+                                <img src={banner2} alt="" style={styleImg} />
+                            </h3>
+                        </div>
+
+                        <div>
+                            <h3 style={contentStyle}>
+                                <img src={banner3} alt="" style={styleImg} />
+                            </h3>
+                        </div>
+                    </Carousel>
+
+                    <br />
+
                     <Spin spinning={isLoading}>
                         <div className="content-right">
                             <Row>
@@ -300,7 +343,7 @@ const Home = () => {
                                 }
                             </Row>
 
-                            <Row style={{ display: "flex", justifyContent: "center", padding: '25px' }}>
+                            <Row style={{ display: "flex", justifyContent: "center", padding: "25px 25px 9px" }}>
                                 <Pagination
                                     total={total}
                                     current={current}
@@ -311,6 +354,7 @@ const Home = () => {
                             </Row>
                         </div>
                     </Spin>
+
                 </Col>
             </Row >
         </>

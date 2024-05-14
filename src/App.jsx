@@ -22,6 +22,7 @@ import TableUser from './components/Admin/ManageUsers/TableUser';
 import BookDetail from './pages/book';
 import "react-image-gallery/styles/scss/image-gallery.scss";
 import './global.scss'
+import Order from './components/Book/Order';
 
 const Layout = () => {
   return (
@@ -65,6 +66,10 @@ export default function App() {
         {
           path: "book/:slug",
           element: <BookDetail />,
+        },
+        {
+          path: "order",
+          element: <Order />,
         },
       ],
     },

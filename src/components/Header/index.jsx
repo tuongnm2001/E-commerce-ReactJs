@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FaReact } from "react-icons/fa";
 import { logout } from '../../services/api';
 import { doLogout } from '../../redux/account/accountSlice';
+import imgCartEmpty from '../../assets/cart-empty.jpg'
 
 const { Search } = Input;
 
@@ -20,7 +21,6 @@ const HeaderPage = () => {
     const carts = useSelector(state => state.order.carts)
 
     const urlAvatar = `${import.meta.env.VITE_BACKEND_URL}/images/avatar/${user?.avatar}`
-
 
     let items = [
         {
@@ -71,59 +71,49 @@ const HeaderPage = () => {
     }
 
     const content = (
-        <div className='cart-container'>
-            <div className='content-up'>
-                <div className='content-left-cart'>
-                    <div className='img-cart'>
-                        <img src="https://picsum.photos/id/1018/1000/600/" alt="" />
+
+        <>
+            {
+                carts.length > 0 ?
+                    <>
+                        <div className='cart-container' >
+                            {
+                                carts && carts.length > 0 &&
+                                carts.map((item, index) => {
+                                    return (
+                                        <div className='content-up' key={`carts-${index}`}>
+                                            <div className='content-left-cart'>
+                                                <div className='img-cart'>
+                                                    <img src={`${import.meta.env.VITE_BACKEND_URL}/images/book/${item?.detail?.thumbnail}`} alt="" />
+                                                </div>
+
+                                                <div className='mainText-cart'>
+                                                    <span>{item.detail.mainText}</span>
+                                                </div>
+                                            </div>
+
+                                            <div className='price-cart'>
+                                                <span>
+                                                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.detail.price)}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+                            <div className='content-down' >
+                                <Button type='primary' onClick={() => navigate('/order')}>Xem giỏ hàng</Button>
+                            </div >
+                        </div>
+                    </>
+                    :
+                    <div className='cart-empty'>
+                        <img src={imgCartEmpty} className='icon-cart-empty' style={{ width: 80, height: 80 }} />
+                        <span className='text-cart-empty'>Chưa Có Sản Phẩm</span>
                     </div>
+            }
 
-                    <div className='mainText-cart'>
-                        <span>Sách Luật - Nhật ký trong tùSách Luật - Nhật ký trong tùSách Luật - Nhật ký trong tù</span>
-                    </div>
-                </div>
-
-                <div className='price-cart'>
-                    <span>300.000đ</span>
-                </div>
-            </div>
-
-            <div className='content-up'>
-                <div className='content-left-cart'>
-                    <div className='img-cart'>
-                        <img src="https://picsum.photos/id/1018/1000/600/" alt="" />
-                    </div>
-
-                    <div className='mainText-cart'>
-                        <span>Sách Luật - Nhật ký trong tù</span>
-                    </div>
-                </div>
-
-                <div className='price-cart'>
-                    <span>300.000đ</span>
-                </div>
-            </div>
-
-            <div className='content-up'>
-                <div className='content-left-cart'>
-                    <div className='img-cart'>
-                        <img src="https://picsum.photos/id/1018/1000/600/" alt="" />
-                    </div>
-
-                    <div className='mainText-cart'>
-                        <span>Sách Luật - Nhật ký trong tù</span>
-                    </div>
-                </div>
-
-                <div className='price-cart'>
-                    <span>300.000đ</span>
-                </div>
-            </div>
-
-            <div className='content-down'>
-                <Button type='primary'>Xem giỏ hàng</Button>
-            </div>
-        </div>
+        </>
     );
 
     return (
@@ -145,7 +135,7 @@ const HeaderPage = () => {
 
                     <div className='cart'>
                         <Popover
-                            title={<span className="custom-title-cart">Sản phẩm mới thêm</span>}
+                            title={<span className="custom-title-cart">{carts.length > 0 ? "Sản phẩm mới thêm" : ""}</span>}
                             placement="bottomRight"
                             content={content}
                             arrow={true}
@@ -164,6 +154,7 @@ const HeaderPage = () => {
                     {
                         isAuthenticated === true ?
                             <Dropdown
+                                arrow="true"
                                 className='dropdown'
                                 // overlayStyle={{ width: '220px', paddingTop: '10px' }}
                                 menu={{

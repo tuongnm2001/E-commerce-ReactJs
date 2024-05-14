@@ -1,0 +1,120 @@
+.order-container {
+    margin              : auto;
+    width               : 100%;
+    // box-shadow     : 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius       : 1rem;
+    border              : transparent;
+
+    .content-left-order {
+        background-color  : #ffffff;
+        border-radius     : 1rem;
+        padding           : 20px 30px;
+        box-shadow        : 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+        .content-up-order {
+            display          : flex;
+            justify-content  : space-between;
+            align-items      : center;
+
+            .title-left-order {
+                font-size    : 24px;
+                font-weight  : 600;
+                color        : #27272a;
+            }
+
+            .title-right-order {
+                font-size    : 14px;
+                font-weight  : 500;
+                color        : #757575;
+            }
+        }
+
+        .content-down-order {
+            display         : flex;
+            flex-direction  : column;
+
+            .product-order {
+                display          : flex;
+                justify-content  : space-between;
+                align-items      : center;
+                gap              : 20px;
+                flex-wrap        : wrap;
+
+                .img-order {
+                    display      : flex;
+                    align-items  : center;
+                    gap          : 15px;
+                    width        : 320px;
+
+                    img {
+                        width       : 60px;
+                        height      : 60px;
+                        object-fit  : contain;
+                    }
+                }
+            }
+        }
+
+        .cart-empty {
+            display         : flex;
+            flex-direction  : column;
+            gap             : 8px;
+            height          : 10rem;
+
+            img {
+                width   : 80px;
+                height  : 80px;
+            }
+
+            .text-cart-empty {
+                font-weight  : 500;
+                color        : #00000066;
+            }
+        }
+    }
+
+    .content-right-order {
+        display         : flex;
+        flex-direction  : column;
+        box-shadow      : 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        border-radius   : 1rem;
+        /* Đảm bảo container chiếm toàn bộ chiều cao */
+
+        .summary-order {
+            display         : flex;
+            flex-direction  : column;
+            flex-grow       : 1;
+            /* Cho phép phần tử này mở rộng và chiếm không gian còn lại */
+
+            padding           : 20px;
+            border-radius     : 1rem;
+            background-color  : #ffffff;
+
+            .title-content-right-order {
+                font-size    : 24px;
+                font-weight  : 600;
+                color        : #27272a;
+            }
+
+            .content-down-summary {
+                display         : flex;
+                flex-direction  : column;
+                gap             : 20px;
+                margin-bottom   : 30px;
+
+                .total-price-summary {
+                    margin-bottom    : auto;
+                    display          : flex;
+                    justify-content  : space-between;
+                    font-size        : 16px;
+                }
+            }
+
+            Button {
+                margin-top  : auto;
+                /* Đảm bảo nút luôn nằm ở phía dưới */
+            }
+        }
+    }
+
+}

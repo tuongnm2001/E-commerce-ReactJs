@@ -10,7 +10,7 @@ import Meta from "antd/es/card/Meta";
 import { useEffect } from "react";
 import { getListBookWithPaginate } from "../../services/api";
 import imgFreeShipping from '../../assets/free-shipping.png'
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { doAddBookAction } from "../../redux/order/orderSlice";
 
 const ViewDetail = (props) => {

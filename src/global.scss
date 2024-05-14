@@ -2,7 +2,6 @@
     margin-top  : 20px;
 
     .content-up {
-        width            : 350px;
         display          : flex;
         justify-content  : space-between;
         margin-top       : 10px;
@@ -26,6 +25,11 @@
                 overflow       : hidden; //Ẩn nội dung bị tràn
                 text-overflow  : ellipsis; //Hiển thị dấu ba chấm (...)
             }
+
+        }
+
+        .price-cart {
+            color  : #ff4d4f;
         }
     }
 
@@ -33,6 +37,25 @@
         margin-top       : 20px;
         display          : flex;
         justify-content  : end;
+    }
+}
+
+.cart-empty {
+    display         : flex;
+    flex-direction  : column;
+    align-items     : center;
+    padding         : 60px;
+    text-align      : center;
+
+    .icon-cart-empty {
+        font-size  : 40px;
+        color      : rgb(79, 188, 172);
+    }
+
+    .text-cart-empty {
+        margin-top  : 10px;
+        font-size   : 16px;
+        color       : #27272a;
     }
 }
 
