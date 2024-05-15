@@ -1,4 +1,4 @@
-import { Button, Col, Divider, InputNumber, Row } from "antd";
+import { Button, Col, Divider, Form, Input, InputNumber, Radio, Result, Row, Steps } from "antd";
 import './Order.scss'
 import { DeleteOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,13 +6,17 @@ import { useEffect, useState } from "react";
 import { doDeleteItemCartAction, doUpdateCartAction } from "../../redux/order/orderSlice";
 import imgCartEmpty from '../../assets/cart-empty.jpg'
 import { Link, useNavigate } from "react-router-dom";
+import TextArea from "antd/es/input/TextArea";
 
 const Order = () => {
 
     const carts = useSelector(state => state.order.carts);
+    const account = useSelector(state => state.account.user)
     const [totalPrice, setTotalPrice] = useState(0)
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [currentStep, setCurrentStep] = useState(0)
+    const [form] = Form.useForm();
 
     useEffect(() => {
         if (carts && carts.length > 0) {
@@ -22,6 +26,7 @@ const Order = () => {
             })
             setTotalPrice(sum)
         } else {
+            setCurrentStep(-1)
             setTotalPrice(0)
         }
     }, [carts])
@@ -77,11 +82,57 @@ const Order = () => {
         return str;
     }
 
+    useEffect(() => {
+        if (account) {
+            form.setFieldsValue({
+                fullName: account.fullName,
+                phone: account.phone,
+            });
+        }
+    }, [account, form]);
+
+    const onFinish = (values) => {
+        console.log('Success:', values);
+    };
+    const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+    };
+
+    const handleClickMainTex = (item) => {
+        if (currentStep === 0) {
+            navigate(`/book/${convertSlug(item?.detail?.mainText)}?id=${item?._id}`);
+        }
+    }
+
+    const onChange = (newStep) => {
+        if (newStep <= currentStep) {
+            setCurrentStep(newStep);
+        }
+    };
 
     return (
         <>
             <Row gutter={[20, 20]} className="order-container">
-                <Col md={18} sm={24} xs={24}>
+
+                <Steps
+                    onChange={onChange}
+                    size="small"
+                    current={currentStep}
+                    status="finish"
+                    items={[
+                        {
+                            title: 'Đơn hàng',
+                        },
+                        {
+                            title: 'Đặt hàng',
+                        },
+                        {
+                            title: 'Thanh toán',
+                        },
+                    ]}
+                />
+
+                <Col md={currentStep === 2 ? 0 : currentStep === -1 ? 24 : 18} sm={24} xs={24}>
                     <div className="content-left-order">
                         <div className="content-up-order">
                             <span className="title-left-order">Giỏ hàng</span>
@@ -101,7 +152,7 @@ const Order = () => {
                                                         <div className="mainText-order">
                                                             <span
                                                                 style={{ cursor: 'pointer' }}
-                                                                onClick={() => navigate(`/book/${convertSlug(item?.detail?.mainText)}?id=${item?._id}`)}
+                                                                onClick={() => handleClickMainTex(item)}
                                                             >
                                                                 {item.detail.mainText}
                                                             </span>
@@ -117,15 +168,20 @@ const Order = () => {
                                                         <InputNumber
                                                             onChange={(value) => handleChangeInputQuantity(value, item)}
                                                             value={item.quantity}
+                                                            disabled={currentStep !== 0}
+                                                            style={{ backgroundColor: '#ffffff', color: 'black' }}
                                                         />
                                                     </div>
 
                                                     <div className="total-price-order">
                                                         {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.detail.price * item.quantity)}
                                                     </div>
-                                                    <div className="icon-delete-order">
-                                                        <DeleteOutlined style={{ color: '#ff4d4f', cursor: 'pointer' }} onClick={() => handleDeleteProduct(item._id)} />
-                                                    </div>
+                                                    {
+                                                        currentStep === 0 &&
+                                                        <div className="icon-delete-order">
+                                                            <DeleteOutlined style={{ color: '#ff4d4f', cursor: 'pointer' }} onClick={() => handleDeleteProduct(item._id)} />
+                                                        </div>
+                                                    }
                                                 </div>
                                                 <Divider />
                                             </div>
@@ -146,40 +202,158 @@ const Order = () => {
                     </div>
                 </Col>
 
-                <Col md={6} sm={24} xs={24}>
-                    <div className="content-right-order">
-                        <div className="summary-order">
-                            <span className="title-content-right-order">Tạm tính</span>
+                {
+                    currentStep === 0 &&
+                    <Col md={6} sm={24} xs={24}>
+                        <div className="content-right-order">
+                            <div className="summary-order">
+                                <span className="title-content-right-order">Đơn hàng</span>
 
-                            <Divider />
+                                <Divider />
 
-                            <div className="content-down-summary">
-                                <div className="total-price-summary">
-                                    <span>Tổng tiền</span>
-                                    <span>
-                                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}
-                                    </span>
-                                </div>
-                                <div className="total-price-summary">
-                                    <span>Giảm giá</span>
-                                    <span>0đ</span>
-                                </div>
-                                <div className="total-price-summary">
-                                    <span>Phí vận chuyển</span>
-                                    <span>0đ</span>
-                                </div>
+                                <div className="content-down-summary">
+                                    <div className="total-price-summary">
+                                        <span>Tạm tính</span>
+                                        <span>
+                                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}
+                                        </span>
+                                    </div>
+                                    <div className="total-price-summary">
+                                        <span>Giảm giá</span>
+                                        <span>0đ</span>
+                                    </div>
+                                    <div className="total-price-summary">
+                                        <span>Phí vận chuyển</span>
+                                        <span>0đ</span>
+                                    </div>
 
-                                <div className="total-price-summary">
-                                    <span style={{ fontWeight: 600, color: '#ff4d4f' }}>Tổng thanh toán</span>
-                                    <span style={{ fontWeight: 600, color: '#ff4d4f' }}>
-                                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}
-                                    </span>
+                                    <div className="total-price-summary">
+                                        <span style={{ fontWeight: 600, color: '#ff4d4f' }}>Tổng thanh toán</span>
+                                        <span style={{ fontWeight: 600, color: '#ff4d4f' }}>
+                                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}
+                                        </span>
+                                    </div>
+
+                                    <Button
+                                        onClick={() => setCurrentStep(1)}
+                                        style={{ width: '100%', backgroundColor: '#1677ff', color: "#ffffff" }} type='primary'
+                                        disabled={carts.length === 0}
+                                    >
+                                        Mua hàng ({carts.length})
+                                    </Button>
+
                                 </div>
                             </div>
-                            <Button style={{ width: '100%' }} type='primary' >Mua hàng ({carts.length})</Button>
                         </div>
-                    </div>
-                </Col>
+                    </Col>
+                }
+
+                {
+                    currentStep === 1 &&
+                    <Col md={6} sm={24} xs={24}>
+                        <div className="content-right-order">
+                            <div className="summary-order">
+                                <span className="title-content-right-order">Thanh toán</span>
+
+                                <Divider />
+
+                                <div className="content-down-summary">
+                                    <Form
+                                        name="basic"
+                                        labelCol={{
+                                            span: 24,
+                                        }}
+                                        style={{
+                                            maxWidth: 600,
+                                        }}
+                                        initialValues={{
+                                            remember: true,
+                                        }}
+                                        onFinish={onFinish}
+                                        onFinishFailed={onFinishFailed}
+                                        autoComplete="off"
+                                        className="custom-form"
+                                        form={form}
+                                    >
+                                        <Form.Item
+                                            label="Tên người nhận"
+                                            name='fullName'
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Vui lòng nhập tên người nhận!',
+                                                },
+                                            ]}
+                                        >
+                                            <Input />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Số điện thoại"
+                                            name="phone"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Vui lòng nhập số điện thoại!',
+                                                },
+                                            ]}
+                                        >
+                                            <Input />
+                                        </Form.Item>
+
+                                        <Form.Item
+                                            labelCol={{ span: 24 }}
+                                            label="Địa chỉ nhận hàng"
+                                            name="address"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Vui lòng nhập địa chỉ nhận hàng!',
+                                                },
+                                            ]}
+                                        >
+                                            <TextArea rows={4} />
+                                        </Form.Item>
+
+                                    </Form>
+                                    <Radio checked>Hình thức thanh toán</Radio>
+                                    <div className="total-price-summary">
+                                        <span style={{ fontWeight: 600, color: '#ff4d4f' }}>Tổng thanh toán</span>
+                                        <span style={{ fontWeight: 600, color: '#ff4d4f' }}>
+                                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}
+                                        </span>
+                                    </div>
+
+                                    <Button
+                                        onClick={() => setCurrentStep(2)}
+                                        style={{ width: '100%' }} type='primary'
+                                    >
+                                        Đặt hàng ({carts.length})
+                                    </Button>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </Col>
+                }
+
+                {
+                    currentStep === 2 &&
+                    <Col md={24}>
+                        <Result
+                            style={{ height: '370px' }}
+                            status="success"
+                            title="Đặt hàng thành công!"
+                            subTitle="Cảm ơn bạn đã đặt hàng."
+                            extra={[
+                                <Button type="primary" key="console">
+                                    Lịch sử mua hàng
+                                </Button>,
+                                <Button key="buy">Tiếp tục</Button>,
+                            ]}
+                        />
+                    </Col>
+                }
             </Row>
         </>
     );
