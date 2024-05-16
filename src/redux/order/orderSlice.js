@@ -26,8 +26,6 @@ export const orderSlice = createSlice({
                 carts.push({ quantity: item.quantity, _id: item._id, detail: item.detail })
             }
             state.carts = carts;
-            message.success('Sản phẩm đã được thêm vào Giỏ hàng')
-
         },
 
         doUpdateCartAction: (state, action) => {
@@ -49,6 +47,10 @@ export const orderSlice = createSlice({
 
         doDeleteItemCartAction: (state, action) => {
             state.carts = state.carts.filter(c => c._id !== action.payload._id)
+        },
+
+        doResetOrder: (state, action) => {
+            state.carts = []
         }
     },
     // The `extraReducers` field lets the slice handle actions defined elsewhere,
@@ -65,7 +67,7 @@ export const orderSlice = createSlice({
     },
 });
 
-export const { doAddBookAction, doUpdateCartAction, doDeleteItemCartAction } = orderSlice.actions;
+export const { doAddBookAction, doUpdateCartAction, doDeleteItemCartAction, doResetOrder } = orderSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of

@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Avatar, Input, Badge, Dropdown, Space, message, Drawer, Divider, Popover, Button } from 'antd';
-import { UserOutlined, ShoppingCartOutlined, MehOutlined, MenuOutlined, ProfileOutlined, LogoutOutlined, BarChartOutlined } from '@ant-design/icons';
+import { UserOutlined, MehOutlined, MenuOutlined, ProfileOutlined, LogoutOutlined, BarChartOutlined, OrderedListOutlined, HomeOutlined } from '@ant-design/icons';
 import './header.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaReact } from "react-icons/fa";
 import { logout } from '../../services/api';
 import { doLogout } from '../../redux/account/accountSlice';
 import imgCartEmpty from '../../assets/cart-empty.jpg'
+import ModalManageAccount from './ModalManageAccount';
+import imgCart from '../../assets/icon-cart.png'
 
 const { Search } = Input;
 
@@ -18,7 +20,10 @@ const HeaderPage = () => {
     const [open, setOpen] = useState(false);
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const [isShowModalManageAccount, setIsShowModalManageAccount] = useState(false)
     const carts = useSelector(state => state.order.carts)
+    const location = useLocation();
+
 
     const urlAvatar = `${import.meta.env.VITE_BACKEND_URL}/images/avatar/${user?.avatar}`
 
@@ -41,12 +46,20 @@ const HeaderPage = () => {
             type: 'divider',
         },
         {
-            label: <label><ProfileOutlined /> Quản lí tài khoản</label>,
+            label: <label onClick={() => setIsShowModalManageAccount(true)}><ProfileOutlined /> Quản lí tài khoản</label>,
             key: '1',
         },
         {
-            label: <label onClick={() => handleLogout()}><LogoutOutlined /> Đăng xuất</label>,
+            label: (
+                <NavLink to="/order-history">
+                    <OrderedListOutlined /> Lịch sử mua hàng
+                </NavLink>
+            ),
             key: '2',
+        },
+        {
+            label: <label onClick={() => handleLogout()}><LogoutOutlined /> Đăng xuất</label>,
+            key: '3',
         }
     ];
 
@@ -56,7 +69,7 @@ const HeaderPage = () => {
         if (index !== 0) {
             items.splice(index, 0, {
                 label: <Link to="/admin"><BarChartOutlined /> Quản trị</Link>,
-                key: '3',
+                key: '4',
             });
         }
     }
@@ -71,7 +84,6 @@ const HeaderPage = () => {
     }
 
     const content = (
-
         <>
             {
                 carts.length > 0 ?
@@ -127,63 +139,74 @@ const HeaderPage = () => {
                     </div>
 
                     <Search
+                        className='search-header'
                         placeholder="Tìm kiếm sản phẩm"
                         onSearch={(values) => console.log(values)}
-                        style={{ width: 650, marginLeft: '20px' }}
+                        style={{ width: 600, marginLeft: '20px' }}
                         size="large"
                     />
+                    <div className='header-item-right'>
 
-                    <div className='cart'>
-                        <Popover
-                            title={<span className="custom-title-cart">{carts.length > 0 ? "Sản phẩm mới thêm" : ""}</span>}
-                            placement="bottomRight"
-                            content={content}
-                            arrow={true}
-                        >
-                            <Badge
-                                count={carts?.length ?? 0}
-                                size="small"
-                                showZero
-                            >
-                                <ShoppingCartOutlined style={{ fontSize: '18px' }} />
-                            </Badge>
-                        </Popover>
+                        <div className='account' onClick={() => navigate('/')} >
+                            <HomeOutlined className='icon' />
+                            <span>Trang chủ</span>
+                        </div>
+                        {location.pathname !== '/order' && (
+                            isAuthenticated === true ?
+                                <Dropdown
+                                    arrow="true"
+                                    className='dropdown-homepage'
+                                    // overlayStyle={{ width: '220px', paddingTop: '10px' }}
+                                    menu={{
+                                        items,
+                                    }}
+                                >
+                                    <a onClick={(e) => e.preventDefault()} style={{ cursor: 'pointer' }}>
+                                        <Space>
+                                            <Badge offset={["-5%", "85%"]}
+                                                style={{
+                                                    width: "8px",
+                                                    height: "8px",
+                                                    boxShadow: "0 0 0 3px #fff",
+                                                    backgroundColor: "#31a24c"
+                                                }}
+                                                dot>
+                                                <Avatar size='large' icon={<UserOutlined />} src={urlAvatar} />
 
-                    </div>
+                                            </Badge>
+                                            <div style={{ color: '#808089', fontFamily: 'sans-serif', fontWeight: '500' }}>{user.fullName}</div>
+                                        </Space>
+                                    </a>
+                                </Dropdown>
+                                :
+                                <div className='account' onClick={() => navigate('/login')} >
+                                    <MehOutlined className='icon' />
+                                    <span>Tài khoản </span>
+                                </div>
+                        )}
+                        {location.pathname !== '/order' && (
+                            <div className='cart'>
+                                <div className='divider' style={{ borderLeft: '1px solid #ebebf0', height: 18 }}></div>
+                                <Popover
+                                    title={<span className="custom-title-cart">{carts.length > 0 ? "Sản phẩm mới thêm" : ""}</span>}
+                                    placement="bottomRight"
+                                    content={content}
+                                    arrow={true}
+                                >
+                                    <Badge
+                                        count={carts?.length ?? 0}
+                                        size="small"
+                                        showZero
+                                    >
+                                        <img src={imgCart} style={{ width: 24, height: 24, marginTop: 4 }} />
+                                    </Badge>
+                                </Popover>
 
-                    {
-                        isAuthenticated === true ?
-                            <Dropdown
-                                arrow="true"
-                                className='dropdown'
-                                // overlayStyle={{ width: '220px', paddingTop: '10px' }}
-                                menu={{
-                                    items,
-                                }}
-                            >
-                                <a onClick={(e) => e.preventDefault()} style={{ cursor: 'pointer' }}>
-                                    <Space>
-                                        <Badge offset={["-5%", "85%"]}
-                                            style={{
-                                                width: "8px",
-                                                height: "8px",
-                                                boxShadow: "0 0 0 3px #fff",
-                                                backgroundColor: "#31a24c"
-                                            }}
-                                            dot>
-                                            <Avatar size='large' icon={<UserOutlined />} src={urlAvatar} />
-                                        </Badge>
-                                    </Space>
-                                </a>
-                            </Dropdown>
-                            :
-                            <div className='account' onClick={() => navigate('/login')} >
-                                <MehOutlined className='icon' />
-                                <span>Tài khoản </span>
                             </div>
-                    }
+                        )}
+                    </div>
                 </div>
-            </div>
+            </div >
 
 
             <Drawer title={
@@ -206,6 +229,10 @@ const HeaderPage = () => {
                 <Link>Đăng xuất</Link>
             </Drawer>
 
+            <ModalManageAccount
+                open={isShowModalManageAccount}
+                setOpen={setIsShowModalManageAccount}
+            />
         </>
     );
 };

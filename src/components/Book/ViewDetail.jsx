@@ -1,5 +1,5 @@
 import ImageGallery from "react-image-gallery";
-import { Breadcrumb, Card, Col, Divider, Flex, Rate, Row, Tag } from 'antd';
+import { Breadcrumb, Card, Col, Divider, Flex, Rate, Row, Tag, message } from 'antd';
 import { CheckCircleOutlined, HomeOutlined, LikeOutlined, MinusOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import './view-detail.scss'
@@ -106,6 +106,12 @@ const ViewDetail = (props) => {
 
     const handleAddToCart = (quantity, book) => {
         dispatch(doAddBookAction({ quantity, detail: book, _id: book._id }))
+        message.success('Sản phẩm đã được thêm vào giỏ hàng!')
+    }
+
+    const handleBuyNow = (quantity, book) => {
+        dispatch(doAddBookAction({ quantity, detail: book, _id: book._id }))
+        navigate('/order')
     }
 
     return (
@@ -204,7 +210,7 @@ const ViewDetail = (props) => {
                                             <button className='cart' onClick={() => handleAddToCart(currentQuantity, dataBook)}>
                                                 <span>Thêm vào giỏ hàng</span>
                                             </button>
-                                            <button className='now'>Mua ngay</button>
+                                            <button className='now' onClick={() => handleBuyNow(currentQuantity, dataBook)}>Mua ngay</button>
                                         </div>
                                     </div>
 

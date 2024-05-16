@@ -23,6 +23,7 @@ import BookDetail from './pages/book';
 import "react-image-gallery/styles/scss/image-gallery.scss";
 import './global.scss'
 import Order from './components/Book/Order';
+import OrderHistory from './components/Book/OrderHistory';
 
 const Layout = () => {
   return (
@@ -70,6 +71,10 @@ export default function App() {
         {
           path: "order",
           element: <Order />,
+        },
+        {
+          path: "order-history",
+          element: <OrderHistory />,
         },
       ],
     },

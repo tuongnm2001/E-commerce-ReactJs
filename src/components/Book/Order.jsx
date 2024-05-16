@@ -1,18 +1,20 @@
-import { Button, Col, Divider, Form, Input, InputNumber, Radio, Result, Row, Steps } from "antd";
+import { Button, Col, Divider, Form, Input, InputNumber, Radio, Result, Row, Steps, message, notification } from "antd";
 import './Order.scss'
 import { DeleteOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { doDeleteItemCartAction, doUpdateCartAction } from "../../redux/order/orderSlice";
+import { doDeleteItemCartAction, doResetOrder, doUpdateCartAction } from "../../redux/order/orderSlice";
 import imgCartEmpty from '../../assets/cart-empty.jpg'
 import { Link, useNavigate } from "react-router-dom";
 import TextArea from "antd/es/input/TextArea";
+import { postCreateAnOrder } from "../../services/api";
 
 const Order = () => {
 
     const carts = useSelector(state => state.order.carts);
     const account = useSelector(state => state.account.user)
     const [totalPrice, setTotalPrice] = useState(0)
+    const [isLoading, setIsLoading] = useState(false)
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(0)
@@ -91,13 +93,6 @@ const Order = () => {
         }
     }, [account, form]);
 
-    const onFinish = (values) => {
-        console.log('Success:', values);
-    };
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
-
     const handleClickMainTex = (item) => {
         if (currentStep === 0) {
             navigate(`/book/${convertSlug(item?.detail?.mainText)}?id=${item?._id}`);
@@ -107,6 +102,38 @@ const Order = () => {
     const onChange = (newStep) => {
         if (newStep <= currentStep) {
             setCurrentStep(newStep);
+        }
+    };
+
+    const onFinish = async (values) => {
+        const detailOrder = carts.map(item => {
+            return {
+                bookName: item.detail.mainText,
+                quantity: item.quantity,
+                _id: item._id
+            }
+        })
+
+        const data = {
+            name: values.fullName,
+            address: values.address,
+            phone: values.phone,
+            totalPrice: totalPrice,
+            detail: detailOrder
+        }
+        setIsLoading(true)
+        const res = await postCreateAnOrder(data);
+        if (res && res.data) {
+            dispatch(doResetOrder());
+            message.success('Đặt hàng thành công');
+            setCurrentStep(2);
+            setIsLoading(false)
+        } else {
+            notification.error({
+                message: 'Đã có lỗi xảy ra',
+                description: res.message,
+            })
+            setIsLoading(false);
         }
     };
 
@@ -270,7 +297,6 @@ const Order = () => {
                                             remember: true,
                                         }}
                                         onFinish={onFinish}
-                                        onFinishFailed={onFinishFailed}
                                         autoComplete="off"
                                         className="custom-form"
                                         form={form}
@@ -314,23 +340,22 @@ const Order = () => {
                                             <TextArea rows={4} />
                                         </Form.Item>
 
+                                        <Radio style={{ padding: '10px 0' }} checked>Thanh toán khi nhận hàng</Radio>
+                                        <div className="total-price-summary" style={{ paddingBottom: '20px' }}>
+                                            <span style={{ fontWeight: 600, color: '#ff4d4f' }}>Tổng thanh toán</span>
+                                            <span style={{ fontWeight: 600, color: '#ff4d4f' }}>
+                                                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}
+                                            </span>
+                                        </div>
+
+                                        <Button
+                                            loading={isLoading}
+                                            onClick={() => form.submit()}
+                                            style={{ width: '100%' }} type='primary'
+                                        >
+                                            Đặt hàng ({carts.length})
+                                        </Button>
                                     </Form>
-                                    <Radio checked>Hình thức thanh toán</Radio>
-                                    <div className="total-price-summary">
-                                        <span style={{ fontWeight: 600, color: '#ff4d4f' }}>Tổng thanh toán</span>
-                                        <span style={{ fontWeight: 600, color: '#ff4d4f' }}>
-                                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalPrice)}
-                                        </span>
-                                    </div>
-
-                                    <Button
-                                        onClick={() => setCurrentStep(2)}
-                                        style={{ width: '100%' }} type='primary'
-                                    >
-                                        Đặt hàng ({carts.length})
-                                    </Button>
-
-
                                 </div>
                             </div>
                         </div>

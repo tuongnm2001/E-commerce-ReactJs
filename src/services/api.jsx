@@ -82,9 +82,17 @@ const fetchBookById = (id) => {
     return axios.get(`api/v1/book/${id}`)
 }
 
+const postCreateAnOrder = (data) => {
+    return axios.post(`/api/v1/order`, { ...data })
+}
+
+const getOrderHistory = () => {
+    return axios.get(`api/v1/history`)
+}
+
 export {
     register, login, fetchAccount, logout, getUserWithPaginate,
     postAddNewUser, postCreateListUserBulk, putUpdateUser, deleteAUser,
     getListBookWithPaginate, getAllCategory, callUploadBookImg, createABook,
-    putUpdateBook, deleteABook, fetchBookById
+    putUpdateBook, deleteABook, fetchBookById, postCreateAnOrder, getOrderHistory
 }
