@@ -186,7 +186,7 @@ const HeaderPage = () => {
                         )}
                         {location.pathname !== '/order' && (
                             <div className='cart'>
-                                <div className='divider' style={{ borderLeft: '1px solid #ebebf0', height: 18 }}></div>
+                                <div className='divider' style={{ borderLeft: '1px solid #ebebf0', height: 30 }}></div>
                                 <Popover
                                     title={<span className="custom-title-cart">{carts.length > 0 ? "Sản phẩm mới thêm" : ""}</span>}
                                     placement="bottomRight"

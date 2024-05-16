@@ -90,9 +90,28 @@ const getOrderHistory = () => {
     return axios.get(`api/v1/history`)
 }
 
+const postUploadAvatar = (fileImg) => {
+    const bodyFormData = new FormData();
+    bodyFormData.append('fileImg', fileImg);
+    return axios({
+        method: 'post',
+        url: '/api/v1/file/upload',
+        data: bodyFormData,
+        headers: {
+            "Content-Type": "multipart/form-data",
+            "upload-type": "avatar"
+        },
+    });
+}
+
+const putUpdateInfo = (_id, avatar, phone, fullName) => {
+    return axios.put(`api/v1/user`, { _id, avatar, phone, fullName })
+}
+
 export {
     register, login, fetchAccount, logout, getUserWithPaginate,
     postAddNewUser, postCreateListUserBulk, putUpdateUser, deleteAUser,
     getListBookWithPaginate, getAllCategory, callUploadBookImg, createABook,
-    putUpdateBook, deleteABook, fetchBookById, postCreateAnOrder, getOrderHistory
+    putUpdateBook, deleteABook, fetchBookById, postCreateAnOrder, getOrderHistory,
+    postUploadAvatar, putUpdateInfo
 }
