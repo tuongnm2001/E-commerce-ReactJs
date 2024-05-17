@@ -134,11 +134,6 @@ const LayoutAdmin = () => {
                                                 icon: < UsergroupAddOutlined />,
                                                 label: <Link to='user-crud'>CRUD</Link>,
 
-                                            },
-                                            {
-                                                key: 'value1',
-                                                icon: <AppstoreOutlined />,
-                                                label: 'File1'
                                             }
                                         ]
                                     },

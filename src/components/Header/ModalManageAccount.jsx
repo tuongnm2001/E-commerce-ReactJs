@@ -27,10 +27,6 @@ const ModalManageAccount = (props) => {
         }
     ]
 
-    const onChange = (key) => {
-        console.log(key);
-    };
-
     return (
         <Modal
             title="Quản lí tài khoản"
@@ -40,11 +36,12 @@ const ModalManageAccount = (props) => {
             footer={null}
             maskClosable={false}
             width={'60vw'}
+            centered
         >
             <Tabs
                 defaultActiveKey="1"
                 items={items}
-                onChange={onChange}
+            // onChange={onChange}
             />
         </Modal>
     );

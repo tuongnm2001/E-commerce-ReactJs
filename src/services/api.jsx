@@ -108,10 +108,22 @@ const putUpdateInfo = (_id, avatar, phone, fullName) => {
     return axios.put(`api/v1/user`, { _id, avatar, phone, fullName })
 }
 
+const postUserChangePassword = (email, oldpass, newpass) => {
+    return axios.post(`/api/v1/user/change-password`, { email, oldpass, newpass })
+}
+
+const getDashBoard = () => {
+    return axios.get(`/api/v1/database/dashboard`)
+}
+
+const totalBook = () => {
+    return axios.get(`/api/v1/book`)
+}
+
 export {
     register, login, fetchAccount, logout, getUserWithPaginate,
     postAddNewUser, postCreateListUserBulk, putUpdateUser, deleteAUser,
     getListBookWithPaginate, getAllCategory, callUploadBookImg, createABook,
     putUpdateBook, deleteABook, fetchBookById, postCreateAnOrder, getOrderHistory,
-    postUploadAvatar, putUpdateInfo
+    postUploadAvatar, putUpdateInfo, postUserChangePassword, getDashBoard, totalBook
 }
