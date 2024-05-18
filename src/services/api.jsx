@@ -120,10 +120,15 @@ const totalBook = () => {
     return axios.get(`/api/v1/book`)
 }
 
+const getListOrder = (query) => {
+    return axios.get(`/api/v1/order?${query}`)
+}
+
 export {
     register, login, fetchAccount, logout, getUserWithPaginate,
     postAddNewUser, postCreateListUserBulk, putUpdateUser, deleteAUser,
     getListBookWithPaginate, getAllCategory, callUploadBookImg, createABook,
     putUpdateBook, deleteABook, fetchBookById, postCreateAnOrder, getOrderHistory,
-    postUploadAvatar, putUpdateInfo, postUserChangePassword, getDashBoard, totalBook
+    postUploadAvatar, putUpdateInfo, postUserChangePassword, getDashBoard, totalBook,
+    getListOrder
 }
