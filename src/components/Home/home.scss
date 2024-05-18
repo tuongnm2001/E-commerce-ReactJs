@@ -57,9 +57,10 @@
         padding           : 16px;
 
         .customize-row {
-            display    : flex;
-            flex-wrap  : wrap;
-            gap        : 20px 12px; //gap 10px, có 5 items trên 1 row => 4*10 = 40px cần được bớt ở width. 40/5items = 8px => calc trừ đi 8px
+            display          : flex;
+            flex-wrap        : wrap;
+            gap              : 20px 12px; //gap 10px, có 5 items trên 1 row => 4*10 = 40px cần được bớt ở width. 40/5items = 8px => calc trừ đi 8px
+            justify-content  : center;
 
             .column {
                 width        : calc(20% - 10px);

@@ -1,13 +1,14 @@
-import { Button, Checkbox, Col, Divider, Form, InputNumber, Rate, Row, Tabs, Pagination, Tooltip, Spin, Carousel } from "antd";
+import { Button, Checkbox, Col, Divider, Form, InputNumber, Rate, Row, Tabs, Pagination, Tooltip, Spin, Carousel, Empty } from "antd";
 import './home.scss'
 import { useForm } from "antd/es/form/Form";
 import { useEffect, useState } from "react";
 import { getAllCategory, getListBookWithPaginate } from "../../services/api";
 import { ReloadOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import banner1 from '../../assets/banner1.jpg'
 import banner2 from '../../assets/banner2.jpg'
 import banner3 from '../../assets/banner3.jpg'
+import searchEmpty from '../../assets/search-empty.png'
 
 const Home = () => {
 
@@ -21,6 +22,8 @@ const Home = () => {
     const [total, setTotal] = useState({})
     const [filter, setFilter] = useState('')
     const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useOutletContext();
+
 
     const onFinish = (values) => {
         if (values?.range?.from >= 0 && values?.range.to >= 0) {
@@ -80,6 +83,7 @@ const Home = () => {
 
     ];
 
+
     const fetchAllBookWithPaginate = async () => {
         setIsLoading(true)
         let query = `current=${current}&pageSize=${pageSize}`
@@ -90,6 +94,10 @@ const Home = () => {
 
         if (filter) {
             query += `&${filter}`
+        }
+
+        if (searchTerm) {
+            query += `&mainText=/${searchTerm}/i`
         }
 
         const res = await getListBookWithPaginate(query);
@@ -104,7 +112,7 @@ const Home = () => {
 
     useEffect(() => {
         fetchAllBookWithPaginate()
-    }, [current, pageSize, filter, sortQuery])
+    }, [current, pageSize, filter, sortQuery, searchTerm])
 
     const handleOnChangePage = (pagination, filters, sorter, extra) => {
 
@@ -190,7 +198,7 @@ const Home = () => {
                         <div className="title-button">
                             <span className="title-danh-muc">Danh mục</span>
                             <Tooltip title="Tải lại">
-                                <ReloadOutlined onClick={() => { form.resetFields(), setFilter('') }} className="reload" />
+                                <ReloadOutlined onClick={() => { form.resetFields(), setFilter(''), setSearchTerm('') }} className="reload" />
                             </Tooltip>
                         </div>
                         <Form
@@ -319,27 +327,32 @@ const Home = () => {
 
                             <Row className='customize-row'>
                                 {
-                                    listBook && listBook.length > 0 &&
-                                    listBook.map((item, index) => {
-                                        return (
-                                            <div className="column" key={`book-${index}`} onClick={() => handleRedirectBook(item)}>
-                                                <div className='wrapper'>
-                                                    <div className='thumbnail'>
-                                                        <img src={`${import.meta.env.VITE_BACKEND_URL}/images/book/${item?.thumbnail}`} alt="thumbnail book" />
-                                                    </div>
-                                                    <div className='text'>{item.mainText}</div>
-                                                    <div className='price'>
-                                                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}
-                                                    </div>
-                                                    <div className='rating'>
-                                                        <Rate value={5} disabled style={{ color: '#ffce3d', fontSize: 8, marginRight: 0 }} />
-                                                        <span className="separator "></span>
-                                                        <span className="sold">Đã bán {item.sold}</span>
+                                    listBook && listBook.length > 0 ?
+                                        listBook.map((item, index) => {
+                                            return (
+                                                <div className="column" key={`book-${index}`} onClick={() => handleRedirectBook(item)}>
+                                                    <div className='wrapper'>
+                                                        <div className='thumbnail'>
+                                                            <img src={`${import.meta.env.VITE_BACKEND_URL}/images/book/${item?.thumbnail}`} alt="thumbnail book" />
+                                                        </div>
+                                                        <div className='text'>{item.mainText}</div>
+                                                        <div className='price'>
+                                                            {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}
+                                                        </div>
+                                                        <div className='rating'>
+                                                            <Rate value={5} disabled style={{ color: '#ffce3d', fontSize: 8, marginRight: 0 }} />
+                                                            <span className="separator "></span>
+                                                            <span className="sold">Đã bán {item.sold}</span>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        )
-                                    })
+                                            )
+                                        })
+                                        :
+                                        <Empty
+                                            image={searchEmpty}
+                                            description="Rất tiếc , không tìm thấy sản phẩm bạn yêu cầu"
+                                        />
                                 }
                             </Row>
 

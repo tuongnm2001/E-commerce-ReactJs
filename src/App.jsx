@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from './pages/login';
-import Contact from './components/Admin/ManageBooks/TableBooks';
 import Register from './pages/register';
 import { Outlet } from "react-router-dom";
 import Footer from './components/Footer';
@@ -26,11 +25,13 @@ import Order from './components/Book/Order';
 import OrderHistory from './components/Book/OrderHistory';
 
 const Layout = () => {
+  const [searchTerm, setSearchTerm] = useState('')
+
   return (
     <div className='layout-app'>
-      <HeaderPage />
+      <HeaderPage searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       <div className='outlet'>
-        <Outlet />
+        <Outlet context={[searchTerm, setSearchTerm]} />
       </div>
       <Footer />
     </div>
@@ -70,11 +71,18 @@ export default function App() {
         },
         {
           path: "order",
-          element: <Order />,
+          element:
+            <ProtectedRoute>
+              <Order />
+            </ProtectedRoute>
         },
         {
           path: "order-history",
-          element: <OrderHistory />,
+          element:
+            <ProtectedRoute>
+              <OrderHistory />
+            </ProtectedRoute>
+
         },
       ],
     },

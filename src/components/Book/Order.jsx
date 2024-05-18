@@ -145,7 +145,7 @@ const Order = () => {
                     onChange={onChange}
                     size="small"
                     current={currentStep}
-                    status="finish"
+                    status="process"
                     items={[
                         {
                             title: 'Đơn hàng',

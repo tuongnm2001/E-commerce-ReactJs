@@ -13,7 +13,7 @@ import imgCart from '../../assets/icon-cart.png'
 
 const { Search } = Input;
 
-const HeaderPage = () => {
+const HeaderPage = ({ searchTerm, setSearchTerm }) => {
 
     const isAuthenticated = useSelector(state => state.account.isAuthenticated)
     const user = useSelector(state => state.account.user)
@@ -24,8 +24,11 @@ const HeaderPage = () => {
     const carts = useSelector(state => state.order.carts)
     const location = useLocation();
 
-
     const urlAvatar = `${import.meta.env.VITE_BACKEND_URL}/images/avatar/${user?.avatar}`
+
+    const handleSearch = (value) => {
+        setSearchTerm(value);
+    };
 
     let items = [
         {
@@ -141,7 +144,7 @@ const HeaderPage = () => {
                     <Search
                         className='search-header'
                         placeholder="Tìm kiếm sản phẩm"
-                        onSearch={(values) => console.log(values)}
+                        onChange={(e) => handleSearch(e.target.value)}
                         style={{ width: 600, marginLeft: '20px' }}
                         size="large"
                     />

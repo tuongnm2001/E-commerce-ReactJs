@@ -15,8 +15,6 @@ const DetailOrder = (props) => {
         totalPrice: dataDetailOrder.totalPrice
     }))
 
-    console.log(dataDetailOrder);
-
     const columns = [
         {
             title: 'STT',

@@ -1,5 +1,5 @@
-import { Outlet, Link, useNavigate } from "react-router-dom";
-import React, { useState } from 'react';
+import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
@@ -83,6 +83,12 @@ const LayoutAdmin = () => {
         }
     }
 
+    // const [selectedKeys, setSelectedKeys] = useState('')
+
+    // useEffect(() => {
+    //     setSelectedKeys(location.pathname)
+    // }, [location.pathname])
+
     return (
         <>
             {
@@ -116,21 +122,21 @@ const LayoutAdmin = () => {
                             <Menu
                                 theme="light"
                                 mode="inline"
-                                defaultSelectedKeys={['1']}
+                                defaultSelectedKeys={'/admin'}
                                 items={[
 
                                     {
-                                        key: '1',
+                                        key: '/admin',
                                         icon: <AppstoreOutlined />,
                                         label: <Link to='/admin'>Dashboard</Link>,
                                     },
                                     {
-                                        key: '2',
+                                        key: '/manage-users',
                                         icon: <UserOutlined />,
                                         label: 'Manage Users',
                                         children: [
                                             {
-                                                key: 'value',
+                                                key: '/user-crud',
                                                 icon: < UsergroupAddOutlined />,
                                                 label: <Link to='user-crud'>CRUD</Link>,
 
@@ -138,12 +144,12 @@ const LayoutAdmin = () => {
                                         ]
                                     },
                                     {
-                                        key: '4',
+                                        key: '/manage-books',
                                         icon: <BookOutlined />,
                                         label: <Link to='manage-books'>Manage Books</Link>,
                                     },
                                     {
-                                        key: '5',
+                                        key: '/manage-orders',
                                         icon: <SnippetsOutlined />,
                                         label: <Link to='manage-orders'>Manage Orders</Link>,
                                     },

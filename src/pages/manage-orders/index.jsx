@@ -80,6 +80,7 @@ const ManageOrders = () => {
                     key: item._id
                 }))}
                 onChange={onChange}
+                pagination={false}
             />
 
             <DetailOrder
