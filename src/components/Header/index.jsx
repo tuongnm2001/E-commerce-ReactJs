@@ -177,7 +177,7 @@ const HeaderPage = ({ searchTerm, setSearchTerm }) => {
                                                 <Avatar size='large' icon={<UserOutlined />} src={urlAvatar} />
 
                                             </Badge>
-                                            <div style={{ color: '#808089', fontFamily: 'sans-serif', fontWeight: '500' }}>{user.fullName}</div>
+                                            {/* <div style={{ color: '#808089', fontFamily: 'sans-serif', fontWeight: '500' }}>{user.fullName}</div> */}
                                         </Space>
                                     </a>
                                 </Dropdown>
@@ -227,7 +227,7 @@ const HeaderPage = ({ searchTerm, setSearchTerm }) => {
             >
                 <Link to='/admin'>Quản trị</Link>
                 <Divider />
-                <Link>Quản lí tài khoản </Link>
+                <Link onClick={() => { setIsShowModalManageAccount(true), setOpen(false) }}>Quản lí tài khoản </Link>
                 <Divider />
                 <Link>Đăng xuất</Link>
             </Drawer>
@@ -236,6 +236,7 @@ const HeaderPage = ({ searchTerm, setSearchTerm }) => {
                 open={isShowModalManageAccount}
                 setOpen={setIsShowModalManageAccount}
             />
+
         </>
     );
 };

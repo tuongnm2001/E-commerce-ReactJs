@@ -12,6 +12,7 @@ import { getListBookWithPaginate } from "../../services/api";
 import imgFreeShipping from '../../assets/free-shipping.png'
 import { useDispatch, useSelector } from "react-redux";
 import { doAddBookAction } from "../../redux/order/orderSlice";
+import { useRef } from "react";
 
 const ViewDetail = (props) => {
     const navigate = useNavigate()
@@ -21,6 +22,8 @@ const ViewDetail = (props) => {
     const [filter, setFilter] = useState({})
     const [currentQuantity, setCurrentQuantity] = useState(1)
     const dispatch = useDispatch();
+    const [currentIndex, setCurrentIndex] = useState(0)
+    const refGallery = useRef(null)
 
     const fetchBook = async () => {
         let query = `current=${1}&pageSize=${10}&category=${dataBook?.category}`;
@@ -114,6 +117,11 @@ const ViewDetail = (props) => {
         navigate('/order')
     }
 
+    const handleOnClickImage = () => {
+        setOpen(true);
+        setCurrentIndex(refGallery?.current?.getCurrentIndex() ?? 0);
+    }
+
     return (
         <>
             {
@@ -141,14 +149,15 @@ const ViewDetail = (props) => {
                                 <Col md={10}>
                                     <div className="view-detail-content-left" >
                                         <ImageGallery
+                                            ref={refGallery}
                                             additionalClass="custom-image-gallery"
-                                            onClick={() => setOpen(true)}
                                             items={images}
                                             showPlayButton={false} //hide play button
                                             showFullscreenButton={false} //hide fullscreen button
                                             renderLeftNav={() => <></>} //left arrow === <> </>
                                             renderRightNav={() => <></>}//right arrow === <> </>
                                             slideOnThumbnailOver={true}  //onHover => auto scroll images
+                                            onClick={() => handleOnClickImage()}
                                         />
                                     </div>
                                 </Col>
@@ -221,7 +230,7 @@ const ViewDetail = (props) => {
                                                 <div className="content-product-same" >
                                                     {
                                                         filter && filter.length > 0 &&
-                                                        filter.map((item, index) => {
+                                                        filter.slice(0, 5).map((item, index) => {
                                                             return (
                                                                 <Card
                                                                     key={`product-same-${index}`}
@@ -267,6 +276,7 @@ const ViewDetail = (props) => {
                 setOpen={setOpen}
                 images={images}
                 dataBook={dataBook}
+                currentIndex={currentIndex}
             />
         </>
     );

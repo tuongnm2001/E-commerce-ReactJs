@@ -3,15 +3,16 @@
     margin     : 0 auto;
 
     .content-left {
-
+        position               : sticky;
+        z-index                : 1;
+        top                    : 20px;
         background-color       : rgb(255, 255, 255);
-        position               : relative;
+        // position          : relative;
         display                : flex;
         margin-bottom          : 16px;
         padding                : 12px 8px;
         flex-direction         : column;
         border-radius          : 8px;
-        // height            : 100%;
 
         .title-button {
             display          : flex;
@@ -56,11 +57,39 @@
         border-radius     : 8px;
         padding           : 16px;
 
+        .btn-filter {
+            display  : none;
+        }
+
+        @media screen and (max-width: 767px) {
+            .btn-deleteFilter {}
+
+            .btn-filter {
+                display        : flex;
+                align-items    : center;
+                gap            : 5px;
+                margin-bottom  : 15px;
+            }
+        }
+
+        @media screen and (min-width: 767px) {
+            .btn-deleteFilter {
+                display  : none;
+            }
+
+            .btn-filter {
+                display  : none;
+            }
+        }
+
         .customize-row {
-            display          : flex;
-            flex-wrap        : wrap;
-            gap              : 20px 12px; //gap 10px, có 5 items trên 1 row => 4*10 = 40px cần được bớt ở width. 40/5items = 8px => calc trừ đi 8px
-            justify-content  : center;
+            display    : flex;
+            flex-wrap  : wrap;
+            gap        : 20px 12px; //gap 10px, có 5 items trên 1 row => 4*10 = 40px cần được bớt ở width. 40/5items = 8px => calc trừ đi 8px
+
+            .empty-search {
+                margin  : auto;
+            }
 
             .column {
                 width        : calc(20% - 10px);
@@ -68,6 +97,8 @@
                 box-shadow   : rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
                     rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
                 border-radius  : 3px;
+
+
 
                 &:hover {
                     -webkit-transform  : translateY(-0.0625rem);
@@ -143,6 +174,8 @@
                 }
             }
 
+
+
             @media screen and (max-width: 600px) {
                 .column {
                     flex       : unset;
@@ -154,11 +187,42 @@
             @media screen and (max-width: 800px) and (min-width: 601px) {
                 .column {
                     flex       : unset;
-                    width      : calc(25% - 8px);
+                    width      : calc(33% - 8px);
                     flex-wrap  : wrap;
                 }
             }
         }
-    }
 
+    }
+}
+
+.filter-mobile {
+    .content-left {
+        display         : flex;
+        flex-direction  : column;
+        gap             : 10px;
+
+        .title-button {
+            display          : flex;
+            justify-content  : space-between;
+            margin-bottom    : 20px;
+
+            .title-danh-muc {
+                font-size    : 20px;
+                font-weight  : 500;
+            }
+
+            .Tải lại {
+                font-size  : 20px;
+            }
+        }
+
+        .item-danhmuc {
+            .item-checkbox {
+                display                : grid;
+                grid-template-columns  : repeat(3, 1fr);
+                gap                    : 10px;
+            }
+        }
+    }
 }

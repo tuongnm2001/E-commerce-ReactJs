@@ -19,6 +19,7 @@ import './LayoutAdmin.scss'
 import { logout } from "../../services/api";
 import { doLogout } from "../../redux/account/accountSlice";
 import { FaReact } from "react-icons/fa";
+import ModalManageAccount from "../../components/Header/ModalManageAccount";
 
 const LayoutAdmin = () => {
 
@@ -30,6 +31,8 @@ const LayoutAdmin = () => {
     } = theme.useToken();
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const [isShowModalManageAccount, setIsShowModalManageAccount] = useState(false)
+    const location = useLocation();
 
     const urlAvatar = `${import.meta.env.VITE_BACKEND_URL}/images/avatar/${user?.avatar}`
 
@@ -38,12 +41,10 @@ const LayoutAdmin = () => {
             label: (
                 <Space>
                     <Avatar size='large' icon={<UserOutlined />} src={urlAvatar} />
-                    {/* <Text>{user.fullName}</Text> */}
                     <div style={{ display: 'flex', flexDirection: 'column', color: '#32475cde', marginLeft: '5px' }}>
                         <span style={{ fontSize: '1rem', fontWeight: '400' }}>{user.fullName}</span>
                         <span style={{ fontSize: '12px', color: '#32475c99' }}>{user.role}</span>
                     </div>
-
                 </Space>
             ),
             key: '0',
@@ -54,9 +55,10 @@ const LayoutAdmin = () => {
         },
         {
             label: (
-                <a rel="noopener noreferrer" >
+
+                <label onClick={() => setIsShowModalManageAccount(true)}>
                     <ProfileOutlined /> Quản lí tài khoản
-                </a>
+                </label>
             ),
             key: '1',
         },
@@ -70,10 +72,6 @@ const LayoutAdmin = () => {
         }
     ];
 
-    const onClose = () => {
-        setCollapsed(false);
-    };
-
     const handleLogout = async () => {
         const res = await logout();
         if (res && res.data) {
@@ -82,12 +80,6 @@ const LayoutAdmin = () => {
             navigate('/')
         }
     }
-
-    // const [selectedKeys, setSelectedKeys] = useState('')
-
-    // useEffect(() => {
-    //     setSelectedKeys(location.pathname)
-    // }, [location.pathname])
 
     return (
         <>
@@ -122,36 +114,35 @@ const LayoutAdmin = () => {
                             <Menu
                                 theme="light"
                                 mode="inline"
-                                defaultSelectedKeys={'/admin'}
+                                selectedKeys={[location.pathname]}
                                 items={[
-
                                     {
                                         key: '/admin',
                                         icon: <AppstoreOutlined />,
                                         label: <Link to='/admin'>Dashboard</Link>,
                                     },
                                     {
-                                        key: '/manage-users',
+                                        key: '/admin/manage-users',
                                         icon: <UserOutlined />,
                                         label: 'Manage Users',
                                         children: [
                                             {
-                                                key: '/user-crud',
+                                                key: '/admin/user-crud',
                                                 icon: < UsergroupAddOutlined />,
-                                                label: <Link to='user-crud'>CRUD</Link>,
+                                                label: <Link to='/admin/user-crud'>CRUD</Link>,
 
                                             }
                                         ]
                                     },
                                     {
-                                        key: '/manage-books',
+                                        key: '/admin/manage-books',
                                         icon: <BookOutlined />,
-                                        label: <Link to='manage-books'>Manage Books</Link>,
+                                        label: <Link to='/admin/manage-books'>Manage Books</Link>,
                                     },
                                     {
-                                        key: '/manage-orders',
+                                        key: '/admin/manage-orders',
                                         icon: <SnippetsOutlined />,
-                                        label: <Link to='manage-orders'>Manage Orders</Link>,
+                                        label: <Link to='/admin/manage-orders'>Manage Orders</Link>,
                                     },
                                 ]}
                             />
@@ -181,6 +172,7 @@ const LayoutAdmin = () => {
                                 <div className="dropdown">
                                     <Dropdown
                                         // overlayStyle={{ width: '220px', paddingTop: '10px' }}
+                                        arrow
                                         menu={{
                                             items,
                                         }}
@@ -223,6 +215,10 @@ const LayoutAdmin = () => {
                     <Outlet />
             }
 
+            <ModalManageAccount
+                open={isShowModalManageAccount}
+                setOpen={setIsShowModalManageAccount}
+            />
         </>
     );
 }

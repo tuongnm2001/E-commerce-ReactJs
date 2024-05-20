@@ -5,17 +5,12 @@ import './ModalGallery.scss'
 
 const ModalGallery = (props) => {
 
-    const { open, setOpen, images, dataBook } = props;
-
-    const handleOk = () => {
-
-    }
+    const { open, setOpen, images, dataBook, currentIndex } = props;
 
     return (
         <>
             <Modal
                 open={open}
-                onOk={handleOk}
                 onCancel={() => setOpen(false)}
                 cancelText={() => setOpen(false)}
                 centered
@@ -26,6 +21,7 @@ const ModalGallery = (props) => {
                 width={800}
             >
                 <ReactImageGallery
+                    startIndex={currentIndex}
                     additionalClass='modal-Img'
                     thumbnailPosition='right'
                     items={images}

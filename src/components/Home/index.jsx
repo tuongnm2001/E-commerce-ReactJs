@@ -1,4 +1,4 @@
-import { Button, Checkbox, Col, Divider, Form, InputNumber, Rate, Row, Tabs, Pagination, Tooltip, Spin, Carousel, Empty } from "antd";
+import { Button, Checkbox, Col, Divider, Form, InputNumber, Rate, Row, Tabs, Pagination, Tooltip, Spin, Carousel, Empty, Drawer } from "antd";
 import './home.scss'
 import { useForm } from "antd/es/form/Form";
 import { useEffect, useState } from "react";
@@ -9,6 +9,7 @@ import banner1 from '../../assets/banner1.jpg'
 import banner2 from '../../assets/banner2.jpg'
 import banner3 from '../../assets/banner3.jpg'
 import searchEmpty from '../../assets/search-empty.png'
+import { HiOutlineFilter } from "react-icons/hi";
 
 const Home = () => {
 
@@ -16,13 +17,14 @@ const Home = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [listCategory, setListCategory] = useState({})
     const [listBook, setListBook] = useState({})
-    const [sortQuery, setSortQuery] = useState('sort=-createdAt')
+    const [sortQuery, setSortQuery] = useState('sort=-sold')
     const [current, setCurrent] = useState(1)
-    const [pageSize, setPageSize] = useState(10)
+    const [pageSize, setPageSize] = useState(20)
     const [total, setTotal] = useState({})
     const [filter, setFilter] = useState('')
+    const [isShowFilterMobile, setIShowFilterMobile] = useState(false)
     const navigate = useNavigate();
-    const [searchTerm, setSearchTerm] = useOutletContext();
+    const [searchTerm, setSearchTerm] = useOutletContext('');
 
 
     const onFinish = (values) => {
@@ -61,15 +63,16 @@ const Home = () => {
 
     const items = [
         {
-            key: 'sort=-createdAt',
-            label: `Hàng Mới`,
-            children: <></>,
-        },
-        {
             key: 'sort=-sold',
             label: `Phổ biến`,
             children: <></>,
         },
+        {
+            key: 'sort=-createdAt',
+            label: `Hàng Mới`,
+            children: <></>,
+        },
+
         {
             key: 'sort=price',
             label: `Giá Thấp Đến Cao`,
@@ -190,105 +193,86 @@ const Home = () => {
 
     }
 
+    const renderContentLeft = (form, onFinish, handleChangeFilter, listCategory, setFilter, setSearchTerm) => {
+        return (
+            <div className="content-left">
+                <div className="title-button">
+                    <span className="title-danh-muc">Danh mục</span>
+                    <Tooltip title="Tải lại">
+                        <ReloadOutlined onClick={() => { form.resetFields(), setFilter(''), setSearchTerm('') }} className="reload" />
+                    </Tooltip>
+                </div>
+                <Form
+                    onFinish={onFinish}
+                    form={form}
+                    onValuesChange={(changedValues, values) => handleChangeFilter(changedValues, values)}
+                >
+                    <Form.Item
+                        name="category"
+                        labelCol={{ span: 24 }}
+                    >
+                        <Checkbox.Group>
+                            <div className="item-danhmuc">
+                                <Row className="item-checkbox">
+                                    {
+                                        listCategory && listCategory.length > 0 &&
+                                        listCategory.map((item, index) => {
+                                            return (
+                                                <Checkbox key={`checkbox-${index}`} value={item}>{item}</Checkbox>
+                                            )
+                                        })
+                                    }
+                                </Row>
+                            </div>
+                        </Checkbox.Group>
+                    </Form.Item>
+                    <Divider orientation="left">Khoảng giá</Divider>
+                    <Form.Item
+                        labelCol={{ span: 24 }}
+                    >
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <Form.Item name={["range", 'from']}>
+                                <InputNumber
+                                    style={{
+                                        width: 100,
+                                    }}
+                                    name='from'
+                                    step={1000}
+                                    min={0}
+                                    placeholder="Từ"
+                                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                />
+                            </Form.Item>
+                            <span>-</span>
+                            <Form.Item name={["range", 'to']}>
+                                <InputNumber
+                                    style={{
+                                        width: 100,
+                                    }}
+                                    name='to'
+                                    step={1000}
+                                    min={0}
+                                    placeholder="Đến"
+                                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                />
+                            </Form.Item>
+                        </div>
+                        <div>
+                            <Button style={{ width: '100%' }} onClick={() => form.submit()}
+                                type='primary'>Áp dụng</Button>
+                        </div>
+                    </Form.Item>
+                </Form>
+            </div>
+        )
+    }
+
     return (
         <>
             <Row gutter={[20, 20]} className="homepage-container">
-                <Col className="gutter-row" md={5} sm={0} xs={0}>
-                    <div className="content-left">
-                        <div className="title-button">
-                            <span className="title-danh-muc">Danh mục</span>
-                            <Tooltip title="Tải lại">
-                                <ReloadOutlined onClick={() => { form.resetFields(), setFilter(''), setSearchTerm('') }} className="reload" />
-                            </Tooltip>
-                        </div>
-                        <Form
-                            onFinish={onFinish}
-                            form={form}
-                            onValuesChange={(changedValues, values) => handleChangeFilter(changedValues, values)}
-                        >
-                            <Form.Item
-                                name="category"
-                                labelCol={{ span: 24 }}
-                            >
-                                <Checkbox.Group>
-                                    <div className="item-danhmuc">
-                                        <Row className="item-checkbox">
-                                            {
-                                                listCategory && listCategory.length > 0 &&
-                                                listCategory.map((item, index) => {
-                                                    return (
-                                                        <Checkbox key={`checkbox-${index}`} value={item}>{item}</Checkbox>
-                                                    )
-                                                })
-                                            }
-                                        </Row>
-                                    </div>
-                                </Checkbox.Group>
-                            </Form.Item>
-                            <Divider orientation="left">Khoảng giá</Divider>
-                            <Form.Item
-                                labelCol={{ span: 24 }}
-                            >
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <Form.Item name={["range", 'from']}>
-                                        <InputNumber
-                                            style={{
-                                                width: 100,
-                                            }}
-                                            name='from'
-                                            step={1000}
-                                            min={0}
-                                            placeholder="Từ"
-                                            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                                        />
-                                    </Form.Item>
-                                    <span>-</span>
-                                    <Form.Item name={["range", 'to']}>
-                                        <InputNumber
-                                            style={{
-                                                width: 100,
-                                            }}
-                                            name='to'
-                                            step={1000}
-                                            min={0}
-                                            placeholder="Đến"
-                                            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                                        />
-                                    </Form.Item>
-                                </div>
-                                <div>
-                                    <Button style={{ width: '100%' }} onClick={() => form.submit()}
-                                        type='primary'>Áp dụng</Button>
-                                </div>
-                            </Form.Item>
-                            <Divider orientation="left  ">Đánh giá</Divider>
-                            <Form.Item
-                                labelCol={{ span: 24 }}
-                            >
-                                <div>
-                                    <Rate value={5} disabled style={{ color: '#ffce3d', fontSize: 15 }} />
-                                    <span className="ant-rate-text"></span>
-                                </div>
-                                <div>
-                                    <Rate value={4} disabled style={{ color: '#ffce3d', fontSize: 15 }} />
-                                    <span className="ant-rate-text">trở lên</span>
-                                </div>
-                                <div>
-                                    <Rate value={3} disabled style={{ color: '#ffce3d', fontSize: 15 }} />
-                                    <span className="ant-rate-text">trở lên</span>
-                                </div>
-                                <div>
-                                    <Rate value={2} disabled style={{ color: '#ffce3d', fontSize: 15 }} />
-                                    <span className="ant-rate-text">trở lên</span>
-                                </div>
-                                <div>
-                                    <Rate value={1} disabled style={{ color: '#ffce3d', fontSize: 15 }} />
-                                    <span className="ant-rate-text">trở lên</span>
-                                </div>
-                            </Form.Item>
 
-                        </Form>
-                    </div>
+                <Col className="gutter-row" md={5} sm={0} xs={0}>
+                    {renderContentLeft(form, onFinish, handleChangeFilter, listCategory, setFilter, setSearchTerm)}
                 </Col>
 
                 <Col className="gutter-row" md={19} sm={24} xs={24}>
@@ -318,18 +302,23 @@ const Home = () => {
                         <div className="content-right">
                             <Row>
                                 <Tabs
-                                    defaultActiveKey="sort=-createdAt"
+                                    defaultActiveKey="sort=-sold"
                                     items={items}
                                     onChange={(value) => { setSortQuery(value) }}
                                     style={{ overflowX: 'auto' }}
                                 />
                             </Row>
 
+                            <Button className="btn-filter" onClick={() => setIShowFilterMobile(true)}>
+                                <HiOutlineFilter />Lọc
+                            </Button>
+
                             <Row className='customize-row'>
                                 {
                                     listBook && listBook.length > 0 ?
                                         listBook.map((item, index) => {
                                             return (
+
                                                 <div className="column" key={`book-${index}`} onClick={() => handleRedirectBook(item)}>
                                                     <div className='wrapper'>
                                                         <div className='thumbnail'>
@@ -349,10 +338,13 @@ const Home = () => {
                                             )
                                         })
                                         :
-                                        <Empty
-                                            image={searchEmpty}
-                                            description="Rất tiếc , không tìm thấy sản phẩm bạn yêu cầu"
-                                        />
+                                        <div className="empty-search">
+                                            <Empty
+                                                className="empty-search"
+                                                image={searchEmpty}
+                                                description="Rất tiếc , không tìm thấy sản phẩm bạn yêu cầu"
+                                            />
+                                        </div>
                                 }
                             </Row>
 
@@ -370,6 +362,22 @@ const Home = () => {
 
                 </Col>
             </Row >
+
+            <Drawer title="Tất cả bộ lọc"
+                onClose={() => setIShowFilterMobile(false)}
+                open={isShowFilterMobile}
+            >
+                <div className="filter-mobile" style={{ display: 'flex', gap: '15px' }}>
+                    {renderContentLeft(form, onFinish, handleChangeFilter, listCategory, setFilter, setSearchTerm)}
+                </div>
+
+                <Button
+                    onClick={() => setIShowFilterMobile(false)}
+                    type="primary"
+                    style={{ width: '100%' }}>
+                    Xem kết quả
+                </Button>
+            </Drawer>
         </>
     );
 }
