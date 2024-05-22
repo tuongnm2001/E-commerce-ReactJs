@@ -33,12 +33,30 @@
     }
 }
 
-@media (max-width: 767px) {
+/* Default styles - show on desktop */
+.toggle {
+    display  : inline-block;
+}
+
+.toggle-mobile {
+    display  : none;
+}
+
+@media (max-width: 1024px) {
     .toggle {
-        float  : right;
+        display  : none;
+
     }
 
-    .slider {
+    .dropdown {
+        display  : inline-block;
+    }
+
+    .toggle-mobile {
+        display  : inline-block;
+    }
+
+    .sider {
         display  : none;
     }
 }

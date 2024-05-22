@@ -165,11 +165,11 @@ const ViewDetail = (props) => {
                                 <Col md={14}>
                                     <div className="view-detail-content-right">
                                         <Flex gap="4px" style={{ fontWeight: 700 }}>
-                                            <Tag icon={<LikeOutlined />} color="error">
+                                            <Tag icon={<LikeOutlined />} color="error" style={{ height: 22 }}>
                                                 Top Deal
                                             </Tag>
 
-                                            <Tag icon={<CheckCircleOutlined />} color="processing">
+                                            <Tag icon={<CheckCircleOutlined />} color="processing" style={{ height: 22 }}>
                                                 Chính hãng
                                             </Tag>
 

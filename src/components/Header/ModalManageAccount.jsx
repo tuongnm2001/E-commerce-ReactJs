@@ -35,7 +35,6 @@ const ModalManageAccount = (props) => {
             onCancel={() => setOpen(false)}
             footer={null}
             maskClosable={false}
-            width={'60vw'}
             centered
         >
             <Tabs

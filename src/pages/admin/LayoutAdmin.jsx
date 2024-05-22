@@ -12,7 +12,7 @@ import {
     LogoutOutlined,
     UsergroupAddOutlined,
 } from '@ant-design/icons';
-import { Layout, message, Menu, Button, theme, Divider, Avatar, Space, Dropdown, Typography, Badge } from 'antd';
+import { Layout, message, Menu, Button, theme, Divider, Avatar, Space, Dropdown, Typography, Badge, Drawer } from 'antd';
 const { Header, Sider, Content, Footer } = Layout;
 import { useDispatch, useSelector } from 'react-redux';
 import './LayoutAdmin.scss'
@@ -32,6 +32,7 @@ const LayoutAdmin = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [isShowModalManageAccount, setIsShowModalManageAccount] = useState(false)
+    const [showDrawer, setShowDrawer] = useState(false)
     const location = useLocation();
 
     const urlAvatar = `${import.meta.env.VITE_BACKEND_URL}/images/avatar/${user?.avatar}`
@@ -169,6 +170,18 @@ const LayoutAdmin = () => {
                                     }}
                                 />
 
+                                <Button
+                                    className="toggle-mobile"
+                                    type="text"
+                                    icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                                    onClick={() => setShowDrawer(true)}
+                                    style={{
+                                        fontSize: '16px',
+                                        width: 64,
+                                        height: 64,
+                                    }}
+                                />
+
                                 <div className="dropdown">
                                     <Dropdown
                                         // overlayStyle={{ width: '220px', paddingTop: '10px' }}
@@ -219,6 +232,66 @@ const LayoutAdmin = () => {
                 open={isShowModalManageAccount}
                 setOpen={setIsShowModalManageAccount}
             />
+
+            <Drawer
+                title={
+                    <Title
+                        onClick={() => navigate('/')}
+                        type="secondary"
+                        style={{ display: 'flex', gap: '5px', cursor: 'pointer', color: '#32475c' }}
+                    >
+                        {
+                            collapsed === false ?
+                                <>
+                                    <FaReact style={{ color: '#32475c' }} className="rotating-icon" />
+                                    <span style={{ fontSize: '28px', fontWeight: '700', fontFamily: 'sans-serif' }}>YNWA</span>
+                                </>
+                                :
+                                <FaReact style={{ color: '#32475c' }} className="rotating-icon" />
+                        }
+                    </Title>
+                }
+                onClose={() => setShowDrawer(false)}
+                open={showDrawer}
+                placement="left"
+            >
+                <Menu
+                    theme="light"
+                    mode="inline"
+                    selectedKeys={[location.pathname]}
+                    items={[
+                        {
+                            key: '/admin',
+                            icon: <AppstoreOutlined />,
+                            label: <Link to='/admin'>Dashboard</Link>,
+                        },
+                        {
+                            key: '/admin/manage-users',
+                            icon: <UserOutlined />,
+                            label: 'Manage Users',
+                            children: [
+                                {
+                                    key: '/admin/user-crud',
+                                    icon: < UsergroupAddOutlined />,
+                                    label: <Link to='/admin/user-crud'>CRUD</Link>,
+
+                                }
+                            ]
+                        },
+                        {
+                            key: '/admin/manage-books',
+                            icon: <BookOutlined />,
+                            label: <Link to='/admin/manage-books'>Manage Books</Link>,
+                        },
+                        {
+                            key: '/admin/manage-orders',
+                            icon: <SnippetsOutlined />,
+                            label: <Link to='/admin/manage-orders'>Manage Orders</Link>,
+                        },
+                    ]}
+                />
+
+            </Drawer>
         </>
     );
 }

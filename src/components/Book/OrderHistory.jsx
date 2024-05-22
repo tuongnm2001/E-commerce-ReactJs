@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import './OrderHistory.scss'
 import { Table, Tag } from 'antd';
 import { getOrderHistory } from '../../services/api';
-import ReactJson from 'react-json-view'
 import moment from 'moment';
+import JsonView from 'react18-json-view'
+import 'react18-json-view/src/style.css'
 
 const OrderHistory = () => {
 
@@ -41,13 +42,14 @@ const OrderHistory = () => {
             dataIndex: 'detail',
             key: 'detail',
             render: (detail) => (
-                < ReactJson
+                <JsonView
                     name="Chi tiết mua hàng"
                     src={detail}
                     collapsed={true}
-                    displayDataTypes={false}
+                    theme={'vscode'}
 
                 />
+
             )
         },
     ];
@@ -96,6 +98,7 @@ const OrderHistory = () => {
                 columns={columns}
                 dataSource={listDataOrderHistory}
                 onChange={onChange}
+                style={{ maxHeight: '400px', overflowY: 'auto' }}
             />
         </div>
     );

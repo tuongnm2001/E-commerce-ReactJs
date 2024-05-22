@@ -150,10 +150,13 @@ const HeaderPage = ({ searchTerm, setSearchTerm }) => {
                     />
                     <div className='header-item-right'>
 
+                        <Divider type='vertical' />
+
                         <div className='account' onClick={() => navigate('/')} >
                             <HomeOutlined className='icon' />
                             <span>Trang chủ</span>
                         </div>
+
                         {location.pathname !== '/order' && (
                             isAuthenticated === true ?
                                 <Dropdown
@@ -225,12 +228,19 @@ const HeaderPage = ({ searchTerm, setSearchTerm }) => {
                 open={open}
                 placement='left'
             >
-                <Link to='/admin'>Quản trị</Link>
-                <Divider />
+                {
+                    user.role === 'ADMIN' &&
+                    <>
+                        <Link to='/admin'>Quản trị</Link>
+                        <Divider />
+                    </>
+                }
                 <Link onClick={() => { setIsShowModalManageAccount(true), setOpen(false) }}>Quản lí tài khoản </Link>
                 <Divider />
+                <Link to='/order-history' onClick={() => setOpen(false)}> Lịch sử mua hàng </Link>
+                <Divider />
                 <Link>Đăng xuất</Link>
-            </Drawer>
+            </Drawer >
 
             <ModalManageAccount
                 open={isShowModalManageAccount}

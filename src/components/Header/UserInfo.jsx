@@ -88,6 +88,7 @@ const UserInfo = () => {
                         showUploadList={false}
                     >
                         <Button
+                            className="btn-DoiAnh"
                             icon={<UploadOutlined />}
                         >
                             Đổi ảnh

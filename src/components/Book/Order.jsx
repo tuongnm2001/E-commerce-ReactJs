@@ -1,4 +1,4 @@
-import { Button, Col, Divider, Form, Input, InputNumber, Radio, Result, Row, Steps, message, notification } from "antd";
+import { Button, Col, Divider, Form, Input, InputNumber, Radio, Result, Row, Steps, Tooltip, message, notification } from "antd";
 import './Order.scss'
 import { DeleteOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -146,6 +146,7 @@ const Order = () => {
                     size="small"
                     current={currentStep}
                     status="process"
+                    className="step"
                     items={[
                         {
                             title: 'Đơn hàng',
@@ -161,11 +162,21 @@ const Order = () => {
 
                 <Col md={currentStep === 2 ? 0 : currentStep === -1 ? 24 : 18} sm={24} xs={24}>
                     <div className="content-left-order">
-                        <div className="content-up-order">
-                            <span className="title-left-order">Giỏ hàng</span>
-                            <span className="title-right-order">{carts.length} sản phẩm</span>
-                        </div>
-                        <Divider />
+                        {
+                            carts && carts.length !== 0 ?
+                                <>
+                                    <div className="des-cart">
+                                        <div className="text-name-cart">Tên sản phẩm</div>
+                                        <div className="price-cart">Giá</div>
+                                        <div className="quantity-cart">Số lượng</div>
+                                        <div className="total-cart">Số tiền</div>
+                                    </div>
+                                    <Divider />
+                                </>
+                                :
+                                <></>
+                        }
+
 
                         {
                             carts && carts.length > 0 ?
@@ -204,10 +215,16 @@ const Order = () => {
                                                         {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.detail.price * item.quantity)}
                                                     </div>
                                                     {
-                                                        currentStep === 0 &&
-                                                        <div className="icon-delete-order">
-                                                            <DeleteOutlined style={{ color: '#ff4d4f', cursor: 'pointer' }} onClick={() => handleDeleteProduct(item._id)} />
-                                                        </div>
+                                                        currentStep === 0 ?
+                                                            <div className="icon-delete-order">
+                                                                <Tooltip title="Xóa">
+                                                                    <DeleteOutlined style={{ color: '#ff4d4f', cursor: 'pointer' }} onClick={() => handleDeleteProduct(item._id)} />
+                                                                </Tooltip>
+                                                            </div>
+                                                            :
+                                                            <div className="icon-delete-order">
+
+                                                            </div>
                                                     }
                                                 </div>
                                                 <Divider />
@@ -379,7 +396,7 @@ const Order = () => {
                         />
                     </Col>
                 }
-            </Row>
+            </Row >
         </>
     );
 }
