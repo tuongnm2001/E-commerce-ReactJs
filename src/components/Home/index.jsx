@@ -230,7 +230,7 @@ const Home = () => {
                     <Form.Item
                         labelCol={{ span: 24 }}
                     >
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                             <Form.Item name={["range", 'from']}>
                                 <InputNumber
                                     style={{

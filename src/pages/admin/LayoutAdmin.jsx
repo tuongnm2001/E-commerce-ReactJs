@@ -263,7 +263,7 @@ const LayoutAdmin = () => {
                         {
                             key: '/admin',
                             icon: <AppstoreOutlined />,
-                            label: <Link to='/admin'>Dashboard</Link>,
+                            label: <Link to='/admin' onClick={() => setShowDrawer(false)}>Dashboard</Link>,
                         },
                         {
                             key: '/admin/manage-users',
@@ -273,7 +273,7 @@ const LayoutAdmin = () => {
                                 {
                                     key: '/admin/user-crud',
                                     icon: < UsergroupAddOutlined />,
-                                    label: <Link to='/admin/user-crud'>CRUD</Link>,
+                                    label: <Link to='/admin/user-crud' onClick={() => setShowDrawer(false)}>CRUD</Link>,
 
                                 }
                             ]
@@ -281,12 +281,12 @@ const LayoutAdmin = () => {
                         {
                             key: '/admin/manage-books',
                             icon: <BookOutlined />,
-                            label: <Link to='/admin/manage-books'>Manage Books</Link>,
+                            label: <Link to='/admin/manage-books' onClick={() => setShowDrawer(false)}>Manage Books</Link>,
                         },
                         {
                             key: '/admin/manage-orders',
                             icon: <SnippetsOutlined />,
-                            label: <Link to='/admin/manage-orders'>Manage Orders</Link>,
+                            label: <Link to='/admin/manage-orders' onClick={() => setShowDrawer(false)}>Manage Orders</Link>,
                         },
                     ]}
                 />
